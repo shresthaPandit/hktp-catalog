@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HK Trailer Parts - New Website Project Brief</title>
+  <style>
+    body {
+      font-family: 'Calibri', 'Arial', sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 1in;
+      color: #333;
+    }
+    h1 {
+      font-size: 24pt;
+      color: #1F4E78;
+      border-bottom: 3px solid #1F4E78;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 16pt;
+      color: #2E75B5;
+      margin-top: 30px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+    h3 {
+      font-size: 13pt;
+      color: #1F4E78;
+      margin-top: 20px;
+    }
+    .header-info {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+    .header-info p {
+      margin: 5px 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #1F4E78;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .highlight-box {
+      background: #e8f4fc;
+      border-left: 4px solid #2E75B5;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .cost-box {
+      background: #e8f9e8;
+      border-left: 4px solid #10B981;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    ul, ol {
+      margin: 10px 0;
+      padding-left: 25px;
+    }
+    li {
+      margin: 8px 0;
+    }
+    .fill-in {
+      border-bottom: 1px solid #333;
+      display: inline-block;
+      min-width: 200px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 30px 0;
+    }
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px solid #1F4E78;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<h1>HK Trailer Parts - New Website Project Brief</h1>
+
+<div class="header-info">
+  <p><strong>For:</strong> HK Trailer Parts Team</p>
+  <p><strong>Prepared by:</strong> Development Team</p>
+  <p><strong>Date:</strong> January 24, 2026</p>
+</div>
+
+<hr>
+
+<h2>Why Your Current Website Search is Slow</h2>
+
+<p>Your current website (hktrailerparts.com) runs on older technology that wasn't designed to handle 15,000+ products efficiently. Here's what's happening:</p>
+
+<h3>The Problem</h3>
+
+<p><strong>1. Traditional Server Architecture</strong></p>
+<ul>
+  <li>Every search request travels to a single server in one location</li>
+  <li>The server processes the search, queries the database, and sends results back</li>
+  <li>During busy times, requests queue up and wait their turn</li>
+</ul>
+
+<p><strong>2. Database Without Search Optimization</strong></p>
+<ul>
+  <li>Standard MySQL databases store data but aren't optimized for fast text searching</li>
+  <li>When someone searches "brake pad," the database scans through all 15,000 products one by one</li>
+  <li>No specialized search indexes exist to speed this up</li>
+</ul>
+
+<p><strong>3. No Caching</strong></p>
+<ul>
+  <li>Every identical search repeats the full database scan</li>
+  <li>If 10 people search "oil filter" in an hour, the server does the same work 10 times</li>
+</ul>
+
+<p><strong>4. Single Server Location</strong></p>
+<ul>
+  <li>Your server is likely in one geographic location</li>
+  <li>Customers far from that location experience additional delay (latency)</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>The Result:</strong>
+  <ul>
+    <li>Search times of 2-5+ seconds (should be under 0.5 seconds)</li>
+    <li>Frustrated customers who leave before finding products</li>
+    <li>Lost sales opportunities</li>
+  </ul>
+</div>
+
+<hr>
+
+<h2>How the New Website Solves This</h2>
+
+<table>
+  <tr>
+    <th>Issue</th>
+    <th>Current Site</th>
+    <th>New Site</th>
+  </tr>
+  <tr>
+    <td>Server Location</td>
+    <td>Single location</td>
+    <td>Global CDN (worldwide)</td>
+  </tr>
+  <tr>
+    <td>Search Method</td>
+    <td>Full table scan</td>
+    <td>3-tier optimized search with indexes</td>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>Standard MySQL</td>
+    <td>PostgreSQL with full-text search vectors</td>
+  </tr>
+  <tr>
+    <td>Caching</td>
+    <td>None</td>
+    <td>Automatic edge caching</td>
+  </tr>
+  <tr>
+    <td>Response Time</td>
+    <td>2-5+ seconds</td>
+    <td>Under 0.5 seconds</td>
+  </tr>
+</table>
+
+<h3>New Search System (3-Tier Algorithm)</h3>
+<ol>
+  <li><strong>Tier 1:</strong> Exact SKU match (instant results for part numbers)</li>
+  <li><strong>Tier 2:</strong> Full-text search using pre-built search indexes</li>
+  <li><strong>Tier 3:</strong> Fuzzy matching for partial matches and typos</li>
+</ol>
+
+<hr>
+
+<h2>What We've Already Confirmed</h2>
+
+<p>We analyzed your current website (hktrailerparts.com) and confirmed the following:</p>
+
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Status</th>
+    <th>Details</th>
+  </tr>
+  <tr>
+    <td>Technology Stack</td>
+    <td>Confirmed</td>
+    <td>Yii2 PHP with MySQL database</td>
+  </tr>
+  <tr>
+    <td>SKU Format</td>
+    <td>Confirmed</td>
+    <td>HK000XXXX pattern (e.g., HK0003555)</td>
+  </tr>
+  <tr>
+    <td>Categories</td>
+    <td>Confirmed</td>
+    <td>60+ categories, 2-level structure</td>
+  </tr>
+  <tr>
+    <td>Brands</td>
+    <td>Confirmed</td>
+    <td>228 brands (Automann largest with 994 products)</td>
+  </tr>
+  <tr>
+    <td>Contact Info</td>
+    <td>Confirmed</td>
+    <td>Phone, email, address already on site</td>
+  </tr>
+  <tr>
+    <td>Image Hosting</td>
+    <td>Found</td>
+    <td>Images hosted at hkmis.ca</td>
+  </tr>
+</table>
+
+<div class="highlight-box">
+  <strong>Note:</strong> We observed ~3,400 products on the live site, but our spec mentions 15,000. Please clarify the actual count.
+</div>
+
+<hr>
+
+<h2>What We Still Need From You</h2>
+
+<h3>1. Database Access (Required - Critical)</h3>
+
+<p>We need read-only access to export your product data:</p>
+
+<p><strong>Option A: Direct Database Access (Preferred)</strong></p>
+<ul>
+  <li>MySQL database credentials (host, username, password, database name)</li>
+  <li>We only need SELECT (read) permissions</li>
+  <li>We will never modify your existing data</li>
+</ul>
+
+<p><strong>Option B: API Endpoint</strong></p>
+<ul>
+  <li>If you have an existing API that returns product data</li>
+  <li>Provide the endpoint URL and any authentication keys</li>
+</ul>
+
+<p><strong>Option C: Data Export</strong></p>
+<ul>
+  <li>Export your products table as CSV or SQL dump</li>
+  <li>Include: SKU, name, description, category, brand, price, stock status, images</li>
+</ul>
+
+<h3>2. Product Data Clarification</h3>
+
+<p>Please confirm:</p>
+
+<table>
+  <tr>
+    <th>Question</th>
+    <th>Your Answer</th>
+  </tr>
+  <tr>
+    <td>Total product count in database?</td>
+    <td><span class="fill-in"></span> (site shows ~3,400)</td>
+  </tr>
+  <tr>
+    <td>Are there inactive/hidden products?</td>
+    <td>Yes / No</td>
+  </tr>
+  <tr>
+    <td>Do products have descriptions?</td>
+    <td>Yes / No (we noticed most are blank)</td>
+  </tr>
+  <tr>
+    <td>Where is pricing stored?</td>
+    <td><span class="fill-in"></span> (not visible on site)</td>
+  </tr>
+</table>
+
+<h3>3. Image Hosting (hkmis.ca)</h3>
+
+<p>We noticed your product images are hosted at <code>hkmis.ca/web/product-images/</code>:</p>
+<ul>
+  <li>Is hkmis.ca your internal management system?</li>
+  <li>Can we continue using these image URLs for the new site?</li>
+  <li>Will these URLs remain stable long-term?</li>
+</ul>
+
+<h3>4. Admin Contact for WhatsApp Notifications</h3>
+
+<p>The new system sends instant WhatsApp messages when orders come in:</p>
+<ul>
+  <li><strong>Admin Phone Number:</strong> <span class="fill-in"></span> (with country code, e.g., +1-647-XXX-XXXX)</li>
+  <li><strong>Backup Phone Number:</strong> <span class="fill-in"></span> (optional)</li>
+</ul>
+
+<h3>5. Additional Assets</h3>
+
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Needed?</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td>Company logo (high-res PNG/SVG)</td>
+    <td>Yes</td>
+    <td>For header and branding</td>
+  </tr>
+  <tr>
+    <td>Domain provider info</td>
+    <td>At launch</td>
+    <td>Who manages hktrailerparts.com DNS?</td>
+  </tr>
+</table>
+
+<hr>
+
+<h2>Timeline Overview</h2>
+
+<p>Once we have the prerequisites above:</p>
+
+<table>
+  <tr>
+    <th>Phase</th>
+    <th>Duration</th>
+    <th>What Happens</th>
+  </tr>
+  <tr>
+    <td><strong>Phase 1</strong></td>
+    <td>Week 1-2</td>
+    <td>Database setup, authentication, product catalog</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 2</strong></td>
+    <td>Week 3</td>
+    <td>Shopping cart, orders, WhatsApp notifications</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 3</strong></td>
+    <td>Week 4</td>
+    <td>Testing, security, launch</td>
+  </tr>
+</table>
+
+<p><strong>Total: 4 weeks from receiving data access</strong></p>
+
+<hr>
+
+<h2>New Features You'll Get</h2>
+
+<ol>
+  <li><strong>Lightning-Fast Search</strong> - Under 0.5 seconds</li>
+  <li><strong>Shopping Cart</strong> - Customers can save items and return later</li>
+  <li><strong>Inquiry Orders</strong> - Customers submit orders, you receive instant WhatsApp alerts</li>
+  <li><strong>Order History</strong> - Customers can view their past inquiries</li>
+  <li><strong>Admin Dashboard</strong> - See all orders, update statuses, view analytics</li>
+  <li><strong>Mobile-Friendly</strong> - Works perfectly on phones and tablets</li>
+  <li><strong>Automatic Data Sync</strong> - Products update every 30 minutes from your database</li>
+</ol>
+
+<hr>
+
+<h2>Monthly Operating Cost</h2>
+
+<div class="cost-box">
+<table>
+  <tr>
+    <th>Service</th>
+    <th>Cost</th>
+  </tr>
+  <tr>
+    <td>Hosting (Vercel)</td>
+    <td>$0</td>
+  </tr>
+  <tr>
+    <td>Database (Supabase)</td>
+    <td>$0</td>
+  </tr>
+  <tr>
+    <td>Automation (n8n)</td>
+    <td>$20/month</td>
+  </tr>
+  <tr>
+    <td>WhatsApp Messages (Twilio)</td>
+    <td>~$5/month</td>
+  </tr>
+  <tr>
+    <td><strong>Total</strong></td>
+    <td><strong>~$25-30/month</strong></td>
+  </tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Next Steps</h2>
+
+<ol>
+  <li><strong>Review this document</strong></li>
+  <li><strong>Fill in the data fields table above</strong></li>
+  <li><strong>Provide database access</strong> (Option A, B, or C)</li>
+  <li><strong>Schedule a quick call</strong> to answer any questions</li>
+</ol>
+
+<p>Once we have data access, we can begin immediately.</p>
+
+<hr>
+
+<h2>Questions?</h2>
+
+<p>Contact us at: [Your Contact Info]</p>
+
+<p>We're excited to build you a fast, modern website that will help you serve your customers better!</p>
+
+<div class="footer">
+  <p>HK Trailer Parts - New Website Project Brief</p>
+  <p>Prepared January 24, 2026</p>
+</div>
+
+</body>
+</html>

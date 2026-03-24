@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+
+@import "tailwindcss";
+
+/* ─── HK Brand — Light Theme Only ─── */
+:root {
+  --hk-red:         #E31E24;
+  --hk-red-dark:    #b91519;
+
+  --surface:        #f5f7fa;
+  --surface-alt:    #ffffff;
+  --surface-card:   #ffffff;
+  --surface-raised: #f0f2f5;
+  --on-surface:     #1e2330;
+  --on-surface-dim: #6b7280;
+  --border:         #e5e7eb;
+  --border-strong:  #d1d5db;
+  --header-bg:      rgba(255, 255, 255, 0.97);
+  --nav-link:       #374151;
+  --scrollbar-track: #f3f4f6;
+  --scrollbar-thumb: #E31E24;
+  color-scheme: light;
+}
+
+/* ─── Base ─── */
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* ─── Nav link hover ─── */
+.nav-link:hover { color: #E31E24 !important; }
+
+/* ─── HK Card ─── */
+.hk-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.hk-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 3px 8px rgba(227,30,36,0.08);
+  border-color: #E31E24;
+}
+
+/* ─── Buttons ─── */
+.btn-primary {
+  background-color: #E31E24;
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: background-color 0.2s ease;
+}
+.btn-primary:hover { background-color: #b91519; }
+
+.btn-outline {
+  border: 2px solid #E31E24;
+  color: #E31E24;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.btn-outline:hover { background-color: #E31E24; color: #ffffff; }
+
+/* ─── Metallic gradient (for badges/tags) ─── */
+.metallic-gradient { background: #E31E24; }
+
+/* ─── Section label ─── */
+.section-label {
+  color: #E31E24;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* ─── Selection ─── */
+::selection { background-color: #E31E24; color: #ffffff; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--hk-red-dark); }
