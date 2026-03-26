@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
@@ -10,6 +10,10 @@ import { useCart } from '@/components/CartProvider'
 type LoginStep = 'phone' | 'otp' | 'profile'
 
 export default function LoginPage() {
+  return <Suspense><LoginContent /></Suspense>
+}
+
+function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirect') ?? '/products'
