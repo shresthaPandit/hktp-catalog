@@ -19,7 +19,7 @@ const TRUST = [
 
 export default async function HomePage() {
   const [featured, trailerSections] = await Promise.all([
-    searchProducts({ query: '', limit: 8, page: 1 }).catch(() => []),
+    searchProducts({ query: '', limit: 50, page: 1 }).catch(() => []),
     getTrailerSections().catch(() => []),
   ])
 
@@ -85,29 +85,32 @@ export default async function HomePage() {
             </div>
             <Link href="/products" className="btn-outline hidden md:inline-block px-5 py-2 text-xs rounded-sm">View All</Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {featured.slice(0, 8).map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`} className="hk-card group flex flex-col rounded-sm overflow-hidden">
-                <div className="relative h-44 flex items-center justify-center p-4" style={{ backgroundColor: '#f9fafb' }}>
+          {/* Horizontal scroll row */}
+          <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E31E24 transparent' }}>
+            {featured.map((product) => (
+              <Link key={product.id} href={`/products/${product.id}`} className="hk-card group flex flex-col rounded-sm overflow-hidden flex-shrink-0" style={{ width: 200 }}>
+                <div className="relative flex items-center justify-center p-4" style={{ backgroundColor: '#f9fafb', height: 160 }}>
                   {product.primary_image_url ? (
                     <img src={product.primary_image_url} alt={product.name} className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" />
                   ) : (
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1"><rect x="3" y="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   )}
                   <div className="absolute top-2 right-2 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest" style={{ backgroundColor: product.in_stock ? '#E31E24' : '#6b7280', color: '#ffffff', fontFamily: 'Space Grotesk' }}>
-                    {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                    {product.in_stock ? 'In Stock' : 'Out'}
                   </div>
                 </div>
-                <div className="p-4 flex flex-col gap-1 flex-1">
-                  {product.category && <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>{product.category}</p>}
-                  <p className="text-sm font-semibold leading-snug line-clamp-2 flex-1" style={{ color: 'var(--on-surface)' }}>{product.name}</p>
-                  <p className="text-xs font-mono mt-1" style={{ color: 'var(--on-surface-dim)' }}>{product.sku}</p>
+                <div className="p-3 flex flex-col gap-1 flex-1">
+                  {product.category && <p className="text-[9px] font-bold uppercase tracking-widest truncate" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>{product.category}</p>}
+                  <p className="text-xs font-semibold leading-snug line-clamp-2 flex-1" style={{ color: 'var(--on-surface)' }}>{product.name}</p>
+                  <p className="text-[10px] font-mono mt-1" style={{ color: 'var(--on-surface-dim)' }}>{product.sku}</p>
                 </div>
               </Link>
             ))}
-          </div>
-          <div className="mt-10 text-center md:hidden">
-            <Link href="/products" className="btn-primary inline-block px-10 py-3 text-sm">View Full Catalog</Link>
+            {/* End card — view all */}
+            <Link href="/products" className="flex-shrink-0 flex flex-col items-center justify-center gap-3 rounded-sm border-2 border-dashed border-[#E31E24]/30 hover:border-[#E31E24] transition-colors" style={{ width: 160, minHeight: 240 }}>
+              <span className="text-3xl" style={{ color: '#E31E24' }}>→</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-center" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>View Full<br />Catalog</span>
+            </Link>
           </div>
         </div>
       </section>
