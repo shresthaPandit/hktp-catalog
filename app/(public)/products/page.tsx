@@ -17,17 +17,17 @@ interface PageProps {
 
 export default async function ProductsPage({ searchParams }: PageProps) {
   const params = await searchParams
-  const page = parseInt(params.page ?? '1', 10)
+  const page = Math.max(1, parseInt(params.page ?? '1', 10) || 1)
   const query = params.q ?? ''
   const category = params.category ?? null
   const brand = params.brand ?? null
   const inStockOnly = params.in_stock === 'true'
 
   const [products, categories, brands, totalCount] = await Promise.all([
-    searchProducts({ query, category, brand, inStockOnly, page, limit: 24 }),
-    getCategories(),
-    getBrands(),
-    getTotalProductCount({ query, category, brand, inStockOnly }),
+    searchProducts({ query, category, brand, inStockOnly, page, limit: 24 }).catch(() => []),
+    getCategories().catch(() => []),
+    getBrands().catch(() => []),
+    getTotalProductCount({ query, category, brand, inStockOnly }).catch(() => 0),
   ])
 
   const totalPages = Math.ceil(totalCount / 24)

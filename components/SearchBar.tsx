@@ -39,7 +39,7 @@ export function SearchBar({ placeholder = 'Search...', defaultValue = '' }: Sear
         </svg>
       </div>
       <input
-        type="search"
+        type="text"
         placeholder={placeholder}
         value={value}
         onChange={(e) => {

@@ -160,7 +160,7 @@ export async function updateOrderStatus(orderId: number, status: OrderStatus): P
 
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') throw new Error('Unauthorized')
+  if (!profile || profile.role !== 'admin') throw new Error('Unauthorized')
 
   const updates: Record<string, unknown> = {
     status,
@@ -191,7 +191,7 @@ export async function updateAdminNotes(orderId: number, adminNotes: string): Pro
 
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') throw new Error('Unauthorized')
+  if (!profile || profile.role !== 'admin') throw new Error('Unauthorized')
 
   const { error } = await supabase
     .from('orders')

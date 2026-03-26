@@ -64,7 +64,7 @@ export async function getCategories(): Promise<string[]> {
     .not('category', 'is', null)
     .order('category')
   if (!data) return []
-  const unique = [...new Set(data.map(r => r.category as string).filter(Boolean))]
+  const unique = [...new Set(data.map(r => r.category as string | null).filter((c): c is string => !!c))]
   return unique
 }
 
@@ -78,7 +78,7 @@ export async function getBrands(): Promise<string[]> {
     .not('brand', 'is', null)
     .order('brand')
   if (!data) return []
-  const unique = [...new Set(data.map(r => r.brand as string).filter(Boolean))]
+  const unique = [...new Set(data.map(r => r.brand as string | null).filter((b): b is string => !!b))]
   return unique
 }
 
@@ -136,5 +136,20 @@ export async function getProductsBySection(sectionId: number): Promise<{
     .eq('assembly_category_id', sectionId)
     .order('name')
     .limit(50)
+  return (data ?? []) as { id: number; sku: string; name: string; primary_image_url: string | null; in_stock: boolean }[]
+}
+
+export async function getProductsBySectionAndBrand(sectionId: number, dbBrands: string[] | null): Promise<{
+  id: number; sku: string; name: string; primary_image_url: string | null; in_stock: boolean
+}[]> {
+  const supabase = await createClient()
+  let q = supabase
+    .from('products')
+    .select('id, sku, name, primary_image_url, in_stock')
+    .eq('assembly_category_id', sectionId)
+    .order('name')
+    .limit(50)
+  if (dbBrands && dbBrands.length > 0) q = q.in('brand', dbBrands)
+  const { data } = await q
   return (data ?? []) as { id: number; sku: string; name: string; primary_image_url: string | null; in_stock: boolean }[]
 }

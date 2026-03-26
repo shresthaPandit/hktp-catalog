@@ -19,8 +19,8 @@ const TRUST = [
 
 export default async function HomePage() {
   const [featured, trailerSections] = await Promise.all([
-    searchProducts({ query: '', limit: 8, page: 1 }),
-    getTrailerSections(),
+    searchProducts({ query: '', limit: 8, page: 1 }).catch(() => []),
+    getTrailerSections().catch(() => []),
   ])
 
   return (
@@ -66,41 +66,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
-      <section className="py-16 px-6 lg:px-12" style={{ backgroundColor: '#ffffff' }}>
-        <div className="max-w-[1440px] mx-auto">
-          <p className="section-label mb-2">Browse by Category</p>
-          <h2 className="text-3xl font-black uppercase tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>Shop by Section</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.slug} href={`/products?category=${encodeURIComponent(cat.slug)}`} className="hk-card group block p-6 rounded-sm">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#fff1f2' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E31E24" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                </div>
-                <h3 className="font-bold uppercase text-sm tracking-wide mb-2" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>{cat.name}</h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--on-surface-dim)' }}>{cat.desc}</p>
-                <div className="text-xs font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>Shop Now <span>&#8594;</span></div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TRUST SIGNALS */}
-      <section className="py-12 px-6 lg:px-12" style={{ backgroundColor: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
-        <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {TRUST.map((item) => (
-            <div key={item.title} className="text-center px-2">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: '#fff1f2' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E31E24" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              </div>
-              <h5 className="font-bold text-sm mb-1" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>{item.title}</h5>
-              <p className="text-xs" style={{ color: 'var(--on-surface-dim)' }}>{item.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* TRAILER EXPLORER */}
       <section className="py-16 px-6 lg:px-12" style={{ backgroundColor: '#ffffff' }}>
         <div className="max-w-[1440px] mx-auto">
@@ -143,6 +108,37 @@ export default async function HomePage() {
           </div>
           <div className="mt-10 text-center md:hidden">
             <Link href="/products" className="btn-primary inline-block px-10 py-3 text-sm">View Full Catalog</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES + TRUST SIGNALS */}
+      <section className="px-6 lg:px-12 pb-16" style={{ backgroundColor: '#ffffff' }}>
+        <div className="max-w-[1440px] mx-auto">
+          <p className="section-label mb-2 pt-16">Browse by Category</p>
+          <h2 className="text-3xl font-black uppercase tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>Shop by Section</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {CATEGORIES.map((cat) => (
+              <Link key={cat.slug} href={`/products?category=${encodeURIComponent(cat.slug)}`} className="hk-card group block p-6 rounded-sm">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#fff1f2' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E31E24" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                </div>
+                <h3 className="font-bold uppercase text-sm tracking-wide mb-2" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>{cat.name}</h3>
+                <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--on-surface-dim)' }}>{cat.desc}</p>
+                <div className="text-xs font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>Shop Now <span>&#8594;</span></div>
+              </Link>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-14 pt-10" style={{ borderTop: '1px solid var(--border)' }}>
+            {TRUST.map((item) => (
+              <div key={item.title} className="text-center px-2">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: '#fff1f2' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E31E24" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h5 className="font-bold text-sm mb-1" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>{item.title}</h5>
+                <p className="text-xs" style={{ color: 'var(--on-surface-dim)' }}>{item.sub}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
