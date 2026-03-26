@@ -1,15 +1,29 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { mergeGuestCart } from '@/app/actions/cart'
+import { useCart } from '@/components/CartProvider'
 
 type LoginStep = 'phone' | 'otp' | 'profile'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect') ?? '/products'
   const supabase = createClient()
+  const { guestItems, clearGuestCart } = useCart()
+
+  async function handlePostAuth() {
+    if (guestItems.length > 0) {
+      await mergeGuestCart(guestItems.map(i => ({ productId: i.productId, quantity: i.quantity })))
+      clearGuestCart()
+    }
+    router.push(redirectTo)
+    router.refresh()
+  }
   const [step, setStep] = useState<LoginStep>('phone')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
@@ -60,8 +74,7 @@ export default function LoginPage() {
       if (!profile?.company_name) {
         setStep('profile')
       } else {
-        router.push('/products')
-        router.refresh()
+        await handlePostAuth()
       }
     }
     setLoading(false)

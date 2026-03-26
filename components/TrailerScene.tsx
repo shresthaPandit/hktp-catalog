@@ -583,11 +583,14 @@ function buildTrailer(scene: THREE.Scene) {
 // COMPONENT
 // ══════════════════════════════════════════════════════════════════
 export default function TrailerScene({ sections, activeSection, onSectionSelect }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const sceneRef     = useRef<THREE.Scene | null>(null)
-  const hoveredRef   = useRef<string | null>(null)
-  const animRef      = useRef<number>(0)
-  const timeRef      = useRef<number>(0)
+  const containerRef       = useRef<HTMLDivElement>(null)
+  const sceneRef           = useRef<THREE.Scene | null>(null)
+  const hoveredRef         = useRef<string | null>(null)
+  const animRef            = useRef<number>(0)
+  const timeRef            = useRef<number>(0)
+  // Always holds the latest callback so the click handler never uses a stale closure
+  const onSectionSelectRef = useRef(onSectionSelect)
+  useEffect(() => { onSectionSelectRef.current = onSectionSelect }, [onSectionSelect])
 
   // Update materials when activeSection changes from outside (tab click)
   useEffect(() => {
@@ -716,7 +719,7 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
       if (!title) return
       const sec = sections.find(s => s.title === title)
       if (sec) {
-        onSectionSelect(sec)
+        onSectionSelectRef.current(sec)
         if (controls) controls.autoRotate = false
       }
     }

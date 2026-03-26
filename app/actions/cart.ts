@@ -83,3 +83,20 @@ export async function getCart(): Promise<CartWithProductRow[]> {
   const { data } = await supabase.rpc('get_cart_with_details', { cart_user_id: user.id })
   return data ?? []
 }
+
+export async function mergeGuestCart(items: { productId: number; quantity: number }[]): Promise<void> {
+  if (!items.length) return
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+  for (const item of items) {
+    const { data: existing } = await supabase
+      .from('cart_items').select('id, quantity')
+      .eq('user_id', user.id).eq('product_id', item.productId).maybeSingle()
+    await supabase.from('cart_items').upsert(
+      { user_id: user.id, product_id: item.productId, quantity: (existing?.quantity ?? 0) + item.quantity },
+      { onConflict: 'user_id,product_id', ignoreDuplicates: false }
+    )
+  }
+  revalidatePath('/', 'layout')
+}

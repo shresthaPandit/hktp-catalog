@@ -5,9 +5,14 @@ import { AddToCartButton } from '@/components/AddToCartButton'
 interface AddToCartSectionProps {
   productId: number
   isAuthenticated: boolean
+  sku: string
+  name: string
+  price?: number | null
+  primary_image_url?: string | null
+  in_stock?: boolean
 }
 
-export function AddToCartSection({ productId, isAuthenticated }: AddToCartSectionProps) {
+export function AddToCartSection({ productId, isAuthenticated, sku, name, price, primary_image_url, in_stock }: AddToCartSectionProps) {
   const [quantity, setQuantity] = useState(1)
 
   return (
@@ -31,7 +36,10 @@ export function AddToCartSection({ productId, isAuthenticated }: AddToCartSectio
           +
         </button>
       </div>
-      <AddToCartButton productId={productId} isAuthenticated={isAuthenticated} quantity={quantity} />
+      <AddToCartButton
+        productId={productId} isAuthenticated={isAuthenticated} quantity={quantity}
+        sku={sku} name={name} price={price} primary_image_url={primary_image_url} in_stock={in_stock}
+      />
     </div>
   )
 }

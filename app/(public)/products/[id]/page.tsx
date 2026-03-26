@@ -105,7 +105,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
             )}
 
             {/* Add to Cart CTA */}
-            <AddToCartSection productId={product.id} isAuthenticated={!!authResult} />
+            <AddToCartSection
+              productId={product.id} isAuthenticated={!!authResult}
+              sku={product.sku} name={product.name}
+              price={product.price} primary_image_url={product.primary_image_url}
+              in_stock={product.in_stock}
+            />
 
             {/* Alternate SKUs */}
             {product.alternate_skus && product.alternate_skus.length > 0 && (
