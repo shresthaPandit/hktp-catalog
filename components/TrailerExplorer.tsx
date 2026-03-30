@@ -35,7 +35,7 @@ function displayName(title: string) { return DISPLAY_NAMES[title] ?? title }
 const FEATURED_BRANDS = [
   'Vanguard', 'Hyundai', 'Manac', 'Stoughton',
   'Wabash', 'Dimond', 'Strick', 'Morgan/Sullivan', 'ITD',
-]
+] as const
 
 const BRAND_COLORS: Record<string, string> = {
   'Vanguard':        '#1F4E78',
@@ -123,7 +123,7 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
           style={{ fontFamily: 'Space Grotesk' }}>
           Filter by Trailer Brand — <span className="text-[#E31E24]">{selectedBrand ?? 'All Brands'}</span>
         </p>
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-10 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
           {FEATURED_BRANDS.map(brand => {
             const isActive = selectedBrand === brand
             return (
@@ -152,22 +152,6 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
             )
           })}
 
-          {/* Others */}
-          <button
-            onClick={() => handleBrandSelect('Others')}
-            style={{
-              fontFamily: 'Space Grotesk',
-              backgroundColor: selectedBrand === 'Others' ? '#222' : 'var(--surface-raised)',
-              outline: selectedBrand === 'Others' ? '2px solid #E31E24' : 'none',
-              outlineOffset: '2px',
-            }}
-            className="group flex flex-col items-center justify-center gap-1.5 p-2.5 border border-dashed border-[#cbd0dd]/20 hover:border-[#E31E24]/60 transition-all duration-200 hover:scale-[1.04]"
-          >
-            <div className="w-full h-8 flex items-center justify-center">
-              <span className="text-[var(--on-surface-dim)] text-base leading-none">···</span>
-            </div>
-            <span className={`text-[8px] font-bold uppercase tracking-wide ${selectedBrand === 'Others' ? 'text-white' : 'text-[var(--on-surface-dim)]'}`}>Others</span>
-          </button>
         </div>
       </div>
 

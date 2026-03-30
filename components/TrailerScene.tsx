@@ -657,7 +657,7 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
     const w = container.clientWidth || 700
     const h = container.clientHeight || 440
     const camera = new THREE.PerspectiveCamera(36, w / h, 0.1, 60)
-    camera.position.set(5.0, 2.5, 4.8)
+    camera.position.set(3.8, 1.9, 3.6)
     camera.lookAt(0, 0, 0)
 
     // ── Renderer ───────────────────────────────────────────────────

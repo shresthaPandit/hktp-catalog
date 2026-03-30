@@ -39,15 +39,10 @@ export function HeaderControls({ profile }: { profile: Profile }) {
 
       {/* Nav */}
       <nav className="hidden md:flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
-        {onProducts ? (
-          <Link href="/" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Home</Link>
-        ) : (
-          <Link href="/products" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>All Parts</Link>
-        )}
-        <Link href="/products?category=TRAILER+BODY+PARTS" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Body</Link>
-        <Link href="/products?category=TRAILER+LIGHTS"     className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Lights</Link>
-        <Link href="/products?category=TOOLS"              className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Tools</Link>
-        <Link href="/products?category=HARDWARE"           className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Hardware</Link>
+        <Link href="/"         className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Home</Link>
+        <Link href="/products" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Products</Link>
+        <Link href="/orders"   className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>My Orders</Link>
+        <Link href="/profile"  className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Profile</Link>
       </nav>
 
       {/* Right actions */}
