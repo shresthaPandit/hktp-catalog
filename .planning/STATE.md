@@ -1,3 +1,16 @@
+---
+gsd_state_version: 1.0
+milestone: v1.1
+milestone_name: Core Functionality
+status: unknown
+last_updated: "2026-04-01T20:08:01.608Z"
+progress:
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+---
+
 # Project State
 
 ## Project Reference
@@ -10,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-31)
 ## Current Position
 
 Phase: 7 of 9 in v1.1 (Phone OTP Signup)
-Plan: 1 of 1 in current phase
-Status: In progress
-Last activity: 2026-04-02 — 07-01 complete: phone OTP signup page created
+Plan: 2 of 2 in current phase
+Status: Checkpoint — awaiting human verification
+Last activity: 2026-04-02 — 07-02 Task 1 complete: signup entry points wired (header, login, homepage)
 
-Progress: [█░░░░░░░░░] 10% (v1.1)
+Progress: [██░░░░░░░░] 20% (v1.1)
 
 ## Performance Metrics
 
@@ -32,6 +45,7 @@ Progress: [█░░░░░░░░░] 10% (v1.1)
 | 9. Product Sync Workflow | TBD | - | - |
 
 **Recent Trend:** 07-01 completed in ~5 min (1 task, 1 file)
+| Phase 07-phone-otp-signup P02 | 5 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -43,6 +57,7 @@ Progress: [█░░░░░░░░░] 10% (v1.1)
 - v1.1: SYNC-06 client PHP API is not live — build n8n workflow against a placeholder endpoint, deliver written API contract spec
 - 07-01: Signup always redirects to /products — no searchParams redirect param (new signups land on catalog)
 - 07-01: Inline client-side profile upsert used for signup (not updateProfile server action which redirects to /profile)
+- [Phase 07-phone-otp-signup]: Sign Up placed rightmost in header (primary red) beside Sign In ghost button — rightmost = visual primary action
 
 ### Pending Todos
 
@@ -56,5 +71,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-02
-Stopped at: 07-01 complete — /signup page with 3-step phone OTP flow, resend countdown, guest cart merge
+Stopped at: 07-02 Task 1 complete — checkpoint:human-verify pending for full OTP signup flow end-to-end
 Resume file: None

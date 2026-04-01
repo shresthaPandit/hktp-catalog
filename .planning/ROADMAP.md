@@ -42,7 +42,7 @@
 
 **Milestone Goal:** Wire up the three missing production-critical pieces: phone OTP verification on signup, order-to-WhatsApp notification pipeline, and n8n product sync workflow with logging and failure alerts.
 
-- [ ] **Phase 7: Phone OTP Signup** - Require new users to verify a phone number via SMS OTP during signup
+- [x] **Phase 7: Phone OTP Signup** - Require new users to verify a phone number via SMS OTP during signup (completed 2026-04-01)
 - [ ] **Phase 8: Order Notifications** - Call n8n webhook from createOrder action so admin receives WhatsApp on every new order
 - [ ] **Phase 9: Product Sync Workflow** - Build n8n workflow to incrementally sync products from client PHP API to Supabase with logging and failure alerts
 
@@ -95,6 +95,6 @@ Plans:
 | 4. Admin | v1.0 | - | Complete | March 2026 |
 | 5. Integrations | v1.0 | - | Complete | March 2026 |
 | 6. UI Polish | v1.0 | - | Complete | March 2026 |
-| 7. Phone OTP Signup | 1/2 | In Progress|  | - |
+| 7. Phone OTP Signup | 2/2 | Complete   | 2026-04-01 | - |
 | 8. Order Notifications | v1.1 | 0/? | Not started | - |
 | 9. Product Sync Workflow | v1.1 | 0/? | Not started | - |
