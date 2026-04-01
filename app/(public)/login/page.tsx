@@ -1,6 +1,7 @@
 'use client'
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -162,6 +163,10 @@ function LoginContent() {
               <Button type="submit" loading={loading} className="w-full" size="lg">
                 Send Verification Code
               </Button>
+              <p className="text-center text-xs mt-2" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>
+                New here?{' '}
+                <Link href="/signup" className="font-bold text-[#E31E24] hover:underline">Create an account</Link>
+              </p>
             </form>
           )}
 

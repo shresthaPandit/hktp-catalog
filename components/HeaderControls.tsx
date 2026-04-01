@@ -68,9 +68,14 @@ export function HeaderControls({ profile }: { profile: Profile }) {
             </form>
           </div>
         ) : (
-          <Link href="/login" className="btn-primary px-5 py-2 text-xs" style={{ fontFamily: 'Space Grotesk' }}>
-            Sign In
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/login" className="btn-outline px-4 py-2 text-xs" style={{ fontFamily: 'Space Grotesk' }}>
+              Sign In
+            </Link>
+            <Link href="/signup" className="btn-primary px-5 py-2 text-xs" style={{ fontFamily: 'Space Grotesk' }}>
+              Sign Up
+            </Link>
+          </div>
         )}
       </div>
     </>

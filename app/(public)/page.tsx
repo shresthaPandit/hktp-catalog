@@ -46,7 +46,7 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/products" className="btn-primary inline-block px-8 py-3 text-sm">Browse Parts Catalog</Link>
-              <Link href="/login" className="inline-block px-8 py-3 font-bold uppercase tracking-widest border transition-all text-white hover:bg-white hover:text-gray-900" style={{ fontFamily: 'Space Grotesk', borderColor: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>Sign In to Order</Link>
+              <Link href="/signup" className="inline-block px-8 py-3 font-bold uppercase tracking-widest border transition-all text-white hover:bg-white hover:text-gray-900" style={{ fontFamily: 'Space Grotesk', borderColor: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>Create Account</Link>
             </div>
             <div className="flex gap-10 mt-12 pt-10" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
               {[['3,400+', 'Parts in Stock'], ['B2B', 'Wholesale Only'], ['24h', 'Quote Turnaround']].map(([val, label]) => (
@@ -155,7 +155,7 @@ export default async function HomePage() {
           </div>
           <div className="flex gap-3 flex-shrink-0">
             <Link href="/products" className="inline-block px-8 py-3 text-xs font-bold uppercase tracking-widest text-white border-2 border-white hover:bg-white hover:text-[#E31E24] transition-colors" style={{ fontFamily: 'Space Grotesk' }}>Browse Catalog</Link>
-            <Link href="/login" className="inline-block px-8 py-3 text-xs font-bold uppercase tracking-widest bg-white hover:opacity-90 transition-opacity" style={{ fontFamily: 'Space Grotesk', color: '#E31E24' }}>Sign In</Link>
+            <Link href="/signup" className="inline-block px-8 py-3 text-xs font-bold uppercase tracking-widest bg-white hover:opacity-90 transition-opacity" style={{ fontFamily: 'Space Grotesk', color: '#E31E24' }}>Sign Up</Link>
           </div>
         </div>
       </section>
