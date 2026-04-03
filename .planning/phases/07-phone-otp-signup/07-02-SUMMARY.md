@@ -1,6 +1,6 @@
 ---
 phase: 07-phone-otp-signup
-plan: 02
+plan: "02"
 subsystem: ui
 tags: [next.js, react, navigation, cta, signup]
 
@@ -40,41 +40,46 @@ requirements-completed: [AUTH-05]
 
 # Metrics
 duration: 5min
-completed: 2026-04-02
+completed: 2026-04-04
 ---
 
 # Phase 7 Plan 02: Signup Entry Points Summary
 
-**Sign Up CTA wired into header (primary red), login cross-link, homepage hero, and CTA banner — all four entry points route to /signup**
+**Sign Up CTA wired into header (primary red), login cross-link, homepage hero, and CTA banner — all four entry points route to /signup, human-verified end-to-end**
 
 ## Performance
 
 - **Duration:** ~5 min
-- **Started:** 2026-04-02T00:00:00Z
-- **Completed:** 2026-04-02T00:05:00Z
-- **Tasks:** 1 of 2 (Task 2 is a human-verify checkpoint, pending user confirmation)
+- **Started:** 2026-04-02
+- **Completed:** 2026-04-04
+- **Tasks:** 2 of 2 (Task 1 auto, Task 2 human-verify — APPROVED)
 - **Files modified:** 3
 
 ## Accomplishments
+
 - Header unauthenticated state now shows two side-by-side buttons: Sign In (ghost/outline, href=/login) and Sign Up (primary red, href=/signup)
 - Login page phone step has a "New here? Create an account" cross-link pointing to /signup
 - Homepage hero ghost CTA changed from "Sign In to Order" (/login) to "Create Account" (/signup)
 - Homepage CTA banner white button changed from "Sign In" (/login) to "Sign Up" (/signup)
+- Human verification confirmed: phone OTP flow (enter number, receive SMS, OTP step with 60s resend countdown), profile completion, redirect to /products, and all four entry points working correctly
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Update HeaderControls, login cross-link, and homepage CTAs** - `bd3daf4` (feat)
+2. **Task 2: Human verify full signup flow** - APPROVED (checkpoint, no code commit)
 
-**Plan metadata:** (docs commit — pending after checkpoint approval)
+**Plan metadata:** `21e2e4b` (docs: complete signup entry points plan — checkpoint pending human verify)
 
 ## Files Created/Modified
+
 - `components/HeaderControls.tsx` - Replaced single Sign In btn with flex div containing Sign In (outline) + Sign Up (primary) side by side
 - `app/(public)/login/page.tsx` - Added `import Link from 'next/link'`, added cross-link paragraph inside phone step form
 - `app/(public)/page.tsx` - Hero ghost CTA: href+label to /signup "Create Account"; CTA banner: href+label to /signup "Sign Up"
 
 ## Decisions Made
+
 - Sign Up is placed to the right of Sign In in the header — rightmost position = visual emphasis = primary action
 - Login cross-link added inside the `<form>` element after the submit button (not outside), matching the interfaces spec exactly
 
@@ -83,16 +88,19 @@ Each task was committed atomically:
 None - plan executed exactly as written.
 
 ## Issues Encountered
-None
+
+None. TypeScript compiled cleanly and human verification confirmed all entry points and the full OTP signup flow worked end-to-end (phone OTP via Supabase test numbers, resend countdown, profile completion, redirect to /products).
 
 ## User Setup Required
+
 None - no external service configuration required.
 
 ## Next Phase Readiness
-- All four /signup entry points are now live
-- User must verify the complete OTP signup flow end-to-end (Task 2 checkpoint)
-- After checkpoint approval, Phase 7 is complete and Phase 8 (Order Notifications) can begin
+
+- Phase 7 (Phone OTP Signup) fully complete — signup page (07-01) and all entry points (07-02) delivered and verified
+- Ready to proceed to Phase 8: Order Notifications (Supabase webhook → n8n → Twilio WhatsApp)
+- Blocker: Admin WhatsApp number not yet confirmed — needed to complete Phase 8 end-to-end test
 
 ---
 *Phase: 07-phone-otp-signup*
-*Completed: 2026-04-02*
+*Completed: 2026-04-04*
