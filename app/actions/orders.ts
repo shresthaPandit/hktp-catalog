@@ -2,6 +2,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { after } from 'next/server'
+import { sendOrderNotification, type OrderNotificationPayload } from '@/lib/notifications'
 import type { OrderStatus } from '@/lib/types'
 
 // ─── Customer: create order ──────────────────────────────────────────────────
@@ -60,6 +62,27 @@ export async function createOrder(fd: FormData): Promise<void> {
 
   // Clear cart
   await supabase.from('cart_items').delete().eq('user_id', user.id)
+
+  // Build webhook payload
+  const notificationPayload: OrderNotificationPayload = {
+    order_number: order.order_number,
+    company_name: customerInfo.company_name,
+    phone: customerInfo.phone,
+    items: items.map((i: { name: string; quantity: number; price_at_order: number | null }) => ({
+      name: i.name,
+      quantity: i.quantity,
+      price_at_order: i.price_at_order,
+      subtotal: i.price_at_order != null ? i.price_at_order * i.quantity : null,
+    })),
+    subtotal: items.reduce((sum: number, i: { price_at_order: number | null; quantity: number }) => sum + (i.price_at_order ?? 0) * i.quantity, 0),
+    customer_notes: notes,
+    placed_at: new Date().toISOString(),
+  }
+
+  // Fire-and-forget via after() — runs after redirect, keeps Vercel function alive
+  after(async () => {
+    await sendOrderNotification(order.id, order.order_number, notificationPayload)
+  })
 
   revalidatePath('/cart')
   revalidatePath('/orders')
@@ -122,7 +145,7 @@ export async function getAdminOrders(statusFilter?: string) {
   // Admin RLS allows reading all orders
   let query = supabase
     .from('orders')
-    .select('id, order_number, user_id, status, total_items, created_at, customer_info, whatsapp_sent_at')
+    .select('id, order_number, user_id, status, total_items, created_at, customer_info, whatsapp_sent_at, whatsapp_error')
     .order('created_at', { ascending: false })
 
   if (statusFilter) {
