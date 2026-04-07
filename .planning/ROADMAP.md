@@ -100,5 +100,5 @@ Plans:
 | 5. Integrations | v1.0 | - | Complete | March 2026 |
 | 6. UI Polish | v1.0 | - | Complete | March 2026 |
 | 7. Phone OTP Signup | 2/2 | Complete   | 2026-04-01 | - |
-| 8. Order Notifications | 1/3 | In Progress|  | - |
+| 8. Order Notifications | 2/3 | In Progress|  | - |
 | 9. Product Sync Workflow | v1.1 | 0/? | Not started | - |

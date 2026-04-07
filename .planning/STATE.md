@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-31)
 ## Current Position
 
 Phase: 8 of 9 in v1.1 (Order Notifications)
-Plan: 2 of 2 in current phase (08-02 complete)
-Status: Phase 8 Plan 02 complete — 08-01 (webhook helper) can run independently
-Last activity: 2026-04-07 — 08-02 complete: three-state WhatsApp indicator in admin orders list
+Plan: 2 of 2 in current phase (both 08-01 and 08-02 complete)
+Status: Phase 8 fully complete — webhook helper (08-01) + admin UI (08-02) both delivered
+Last activity: 2026-04-07 — 08-01 complete: sendOrderNotification + after() wired into createOrder
 
 Progress: [███░░░░░░░] 30% (v1.1)
 
@@ -59,7 +59,9 @@ Progress: [███░░░░░░░] 30% (v1.1)
 - 07-01: Signup always redirects to /products — no searchParams redirect param (new signups land on catalog)
 - 07-01: Inline client-side profile upsert used for signup (not updateProfile server action which redirects to /profile)
 - [Phase 07-phone-otp-signup]: Sign Up placed rightmost in header (primary red) beside Sign In ghost button — rightmost = visual primary action
-- 08-02: Type cast for whatsapp_error used in admin orders list for wave independence — cast removable after 08-01 merges
+- 08-01: after() used for fire-and-forget webhook — runs post-redirect, keeps Vercel function alive without blocking customer
+- 08-01: Webhook URL guard (silent skip if env var not set) enables local dev without n8n configured
+- 08-02: Type cast for whatsapp_error used in admin orders list for wave independence — removable now that 08-01 is merged
 
 ### Pending Todos
 
@@ -73,5 +75,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-07
-Stopped at: Completed 08-02-PLAN.md — three-state WhatsApp indicator delivered; 08-01 webhook helper is next/parallel
+Stopped at: Completed 08-01-PLAN.md — Phase 8 Order Notifications fully complete (both plans done), ready for Phase 9
 Resume file: None
