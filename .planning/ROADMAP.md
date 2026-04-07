@@ -71,7 +71,11 @@ Plans:
   1. After checkout, the createOrder server action sends order number, customer name, phone, and item list to the n8n webhook
   2. Admin's WhatsApp receives a formatted message with full order details within 30 seconds of the order being placed
   3. If the webhook call fails (timeout, n8n down), the order is still saved to Supabase and the error is recorded — no order is lost
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 08-01-PLAN.md — Create lib/notifications.ts helper and wire createOrder to after() + fix getAdminOrders query
+- [ ] 08-02-PLAN.md — Update admin orders list with three-state WhatsApp indicator (Sent/Failed/Pending)
+- [ ] 08-03-PLAN.md — Configure n8n webhook workflow + Twilio WhatsApp node + end-to-end verification
 
 ### Phase 9: Product Sync Workflow
 **Goal**: An n8n workflow keeps Supabase products in sync with the client PHP API automatically, with full observability and admin alerts on repeated failures
@@ -96,5 +100,5 @@ Plans:
 | 5. Integrations | v1.0 | - | Complete | March 2026 |
 | 6. UI Polish | v1.0 | - | Complete | March 2026 |
 | 7. Phone OTP Signup | 2/2 | Complete   | 2026-04-01 | - |
-| 8. Order Notifications | v1.1 | 0/? | Not started | - |
+| 8. Order Notifications | v1.1 | 0/3 | Not started | - |
 | 9. Product Sync Workflow | v1.1 | 0/? | Not started | - |

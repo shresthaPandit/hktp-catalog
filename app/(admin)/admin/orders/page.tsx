@@ -104,7 +104,9 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                     <td className="px-4 py-3 text-[10px] font-bold uppercase" style={{ fontFamily: 'Space Grotesk' }}>
                       {order.whatsapp_sent_at
                         ? <span className="text-green-400">Sent</span>
-                        : <span className="text-orange-400">Pending</span>}
+                        : (order as { whatsapp_error?: string | null }).whatsapp_error
+                          ? <span className="text-amber-400">Failed</span>
+                          : <span style={{ color: 'var(--on-surface-dim)' }}>Pending</span>}
                     </td>
                     <td className="px-4 py-3">
                       <Link href={`/admin/orders/${order.id}`} className="text-[10px] font-black uppercase tracking-widest text-[#E31E24] hover:text-[#FFB4A8] transition-colors" style={{ fontFamily: 'Space Grotesk' }}>
