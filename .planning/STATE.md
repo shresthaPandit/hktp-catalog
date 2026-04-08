@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Core Functionality
 status: unknown
-last_updated: "2026-04-03T22:35:08.284Z"
+last_updated: "2026-04-07T13:31:19.113Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 2
+  completed_phases: 2
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Progress: [███░░░░░░░] 30% (v1.1)
 **Recent Trend:** 07-01 completed in ~5 min (1 task, 1 file)
 | Phase 07-phone-otp-signup P02 | 5 | 1 tasks | 3 files |
 | Phase 07-phone-otp-signup P02 | 5 | 2 tasks | 3 files |
+| Phase 08-order-notifications P03 | 5 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Progress: [███░░░░░░░] 30% (v1.1)
 - 08-01: after() used for fire-and-forget webhook — runs post-redirect, keeps Vercel function alive without blocking customer
 - 08-01: Webhook URL guard (silent skip if env var not set) enables local dev without n8n configured
 - 08-02: Type cast for whatsapp_error used in admin orders list for wave independence — removable now that 08-01 is merged
+- [Phase 08-order-notifications]: n8n workflow configured by user (Task 1 was human-action checkpoint) — executor only sets env var
+- [Phase 08-order-notifications]: .env.local is gitignored; N8N_WEBHOOK_ORDER_NOTIFICATION update is local-only (correct for secrets)
 
 ### Pending Todos
 
