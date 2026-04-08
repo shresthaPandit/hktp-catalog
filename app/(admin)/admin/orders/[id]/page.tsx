@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/app/actions/auth'
 import { getAdminOrderDetail, updateOrderStatus, updateAdminNotes } from '@/app/actions/orders'
 import { formatPrice } from '@/lib/utils'
 import OrderActions from './OrderActions'
+import InvoiceUpload from './InvoiceUpload'
 import type { OrderStatus, OrderItem } from '@/lib/types'
 
 interface PageProps {
@@ -54,6 +55,13 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             <span className="text-[var(--on-surface-dim)]">/</span>
             <span className="text-[#E31E24]">{order.order_number}</span>
           </div>
+          <a
+            href="/admin/orders"
+            className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--on-surface-dim)] hover:text-[#E31E24] transition-colors mb-3"
+            style={{ fontFamily: 'Space Grotesk' }}
+          >
+            ← Back to Orders
+          </a>
           <div className="flex items-center justify-between">
             <h1 className="font-mono text-2xl font-black text-[#E31E24]">{order.order_number}</h1>
             <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${STATUS_STYLES[order.status as OrderStatus]}`} style={{ fontFamily: 'Space Grotesk' }}>
@@ -111,6 +119,9 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             updateAdminNotes={updateAdminNotes}
           />
         </div>
+
+        {/* Invoices */}
+        <InvoiceUpload orderId={order.id} />
 
         {/* Items */}
         <div className="border border-[#cbd0dd]/20" style={{ backgroundColor: 'var(--surface-card)' }}>

@@ -16,9 +16,9 @@ Requirements for milestone v1.1. Each maps to roadmap phases.
 
 ### Order Notifications
 
-- [ ] **NOTIF-01**: After an order is placed, system calls the n8n webhook with order number, customer name, phone, and item list
-- [ ] **NOTIF-02**: Admin receives WhatsApp message with order details within 30 seconds of order placement
-- [ ] **NOTIF-03**: If n8n webhook call fails, order is still saved and error is logged (no order loss)
+- [x] **NOTIF-01**: After an order is placed, system calls the n8n webhook with order number, customer name, phone, and item list
+- [x] **NOTIF-02**: Admin receives WhatsApp message with order details within 30 seconds of order placement
+- [x] **NOTIF-03**: If n8n webhook call fails, order is still saved and error is logged (no order loss)
 
 ### Product Sync
 
@@ -62,9 +62,9 @@ Deferred — pending client confirmation.
 | AUTH-06 | Phase 7 | Complete |
 | AUTH-07 | Phase 7 | Complete |
 | AUTH-08 | Phase 7 | Complete |
-| NOTIF-01 | Phase 8 | Pending |
-| NOTIF-02 | Phase 8 | Pending |
-| NOTIF-03 | Phase 8 | Pending |
+| NOTIF-01 | Phase 8 | Complete |
+| NOTIF-02 | Phase 8 | Complete |
+| NOTIF-03 | Phase 8 | Complete |
 | SYNC-01 | Phase 9 | Pending |
 | SYNC-02 | Phase 9 | Pending |
 | SYNC-03 | Phase 9 | Pending |

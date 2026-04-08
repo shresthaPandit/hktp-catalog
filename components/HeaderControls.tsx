@@ -21,10 +21,10 @@ export function HeaderControls({ profile }: { profile: Profile }) {
   }, [isHome])
 
   const onProducts = pathname === '/products' || pathname.startsWith('/products?')
-  const linkColor  = scrolled ? '#374151' : 'rgba(255,255,255,0.92)'
-  const subtleColor = scrolled ? '#6b7280' : 'rgba(255,255,255,0.6)'
-  const dividerColor = scrolled ? '#e5e7eb' : 'rgba(255,255,255,0.25)'
-  const linkStyle  = { color: linkColor, fontFamily: 'Space Grotesk' }
+  const linkColor   = '#374151'
+  const subtleColor = '#6b7280'
+  const dividerColor = '#e5e7eb'
+  const linkStyle   = { color: linkColor, fontFamily: 'Space Grotesk' }
 
   return (
     <>
@@ -41,7 +41,7 @@ export function HeaderControls({ profile }: { profile: Profile }) {
       <nav className="hidden md:flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
         <Link href="/"         className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Home</Link>
         <Link href="/products" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Products</Link>
-        <Link href="/orders"   className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>My Orders</Link>
+        {profile?.role !== 'admin' && <Link href="/orders" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>My Orders</Link>}
         <Link href="/profile"  className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Profile</Link>
       </nav>
 
@@ -50,14 +50,15 @@ export function HeaderControls({ profile }: { profile: Profile }) {
         <CartBadge color={linkColor} />
         {profile ? (
           <div className="flex items-center gap-3">
-            {profile.role === 'admin' && (
-              <Link href="/admin/dashboard" className="hidden md:block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded" style={{ color: '#E31E24', fontFamily: 'Space Grotesk', border: '1px solid #E31E24' }}>
+            {profile.role === 'admin' ? (
+              <Link href="/admin/orders" className="hidden md:block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded" style={{ color: '#E31E24', fontFamily: 'Space Grotesk', border: '1px solid #E31E24' }}>
                 Admin
               </Link>
+            ) : (
+              <Link href="/orders" className="hidden md:block text-xs font-semibold uppercase tracking-widest nav-link" style={linkStyle}>
+                Orders
+              </Link>
             )}
-            <Link href="/orders" className="hidden md:block text-xs font-semibold uppercase tracking-widest nav-link" style={linkStyle}>
-              Orders
-            </Link>
             <Link href="/profile" className="nav-link p-2 transition-colors" style={{ color: linkColor }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>

@@ -430,17 +430,61 @@ TWILIO_WHATSAPP_TO=whatsapp:+15551234567
 
 ## Project Status
 
-**Current:** Pre-Development - Awaiting Client Data
+**Current:** v1.1 In Progress — Phase 7 complete, Phase 8 next
 
-**Blockers:**
-| Item | Priority |
-|------|----------|
-| Database access (MySQL/API/CSV) | CRITICAL |
-| Product count clarification (3,400 vs 15,000) | HIGH |
-| Confirm hkmis.ca image URL reuse | HIGH |
-| Admin WhatsApp number | Medium |
-| Company logo | Low |
-| Domain DNS access | Low |
+**Completed Phases:** 1–7 (Foundation → Phone OTP Signup)
+**Next:** Phase 8 — Order Notifications (n8n webhook + WhatsApp)
+
+---
+
+## Supabase Configuration (Live)
+
+### Phone Auth (Twilio)
+- Provider: Twilio SMS
+- Account SID: AC****************************** (see .env.local)
+- Message Service SID: MG****************************** (see .env.local)
+- OTP Expiry: 300 seconds | OTP Length: 6 digits
+- **Twilio on Trial** — real SMS only to verified numbers; test number `919389919083=123456` configured in Supabase
+- Upgrade Twilio before production launch
+
+### Storage Bucket: invoices
+- Private bucket, 10MB limit
+- Allowed: PDF, JPG, PNG, WEBP
+- Path pattern: `invoices/order-{orderId}/{timestamp}-{filename}`
+- RLS: admin read/write/delete only
+
+### profiles RLS Policies (clean — no recursion)
+```sql
+-- DO NOT add policies that query profiles from within profiles (causes infinite recursion)
+CREATE POLICY "profiles_select_own" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "profiles_insert_own" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_update_own" ON profiles FOR UPDATE USING (auth.uid() = id);
+```
+
+### Making a user admin
+```sql
+INSERT INTO profiles (id, role, created_at, updated_at)
+VALUES ('<uuid>', 'admin', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET role = 'admin';
+-- Note: phone stored without + prefix in auth.users (e.g. 919389919083)
+```
+
+---
+
+## Admin Dashboard Notes
+
+- Admin users: header shows **Admin** button → `/admin/orders`; **My Orders** nav hidden
+- Order detail page (`/admin/orders/[id]`): has ← Back button + Invoice upload section
+- Invoice upload component: `app/(admin)/admin/orders/[id]/InvoiceUpload.tsx`
+
+---
+
+## Loyalty System (v1.2 — not started)
+- Point rate config (1$=1 point) will live in admin panel
+- Requirements: LOYAL-01 to LOYAL-04 in REQUIREMENTS.md
+- Start with `/gsd:new-milestone` after v1.1 complete
+
+---
 
 **Project Files:**
 - `CLAUDE.md` - Master specification
@@ -450,5 +494,5 @@ TWILIO_WHATSAPP_TO=whatsapp:+15551234567
 
 ---
 
-**Document Version:** 1.2
-**Last Updated:** January 24, 2026
+**Document Version:** 1.3
+**Last Updated:** April 4, 2026

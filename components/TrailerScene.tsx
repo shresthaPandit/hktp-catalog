@@ -40,7 +40,7 @@ function buildTrailer(scene: THREE.Scene) {
     steelLt: '#4a5058',  // lighter steel
     baseFrame: '#7e9ab0', // base assembly frame — contrasts with dark floor
     under:   '#1e2126',  // underframe dark
-    wheelRb: '#111418',  // tire rubber
+    wheelRb: '#2c3038',  // tire rubber
     rimSil:  '#6a7078',  // wheel rim silver
     rimSpk:  '#8a9098',  // rim spokes
     hubChr:  '#9aa0a8',  // hub chrome
@@ -127,31 +127,32 @@ function buildTrailer(scene: THREE.Scene) {
     canvas.width = 512; canvas.height = 256
     const ctx = canvas.getContext('2d')!
     ctx.clearRect(0, 0, 512, 256)
-    // Background panel (white)
-    ctx.fillStyle = '#ffffff'
-    ctx.beginPath()
-    if (ctx.roundRect) { ctx.roundRect(12, 12, 488, 232, 18) } else { ctx.rect(12, 12, 488, 232) }
-    ctx.fill()
-    // Red accent bar on left
+    // No white background — render directly on trailer surface
+    // Red top bar
     ctx.fillStyle = '#E31E24'
-    ctx.fillRect(12, 12, 22, 232)
-    // "HK" text
-    ctx.fillStyle = '#1a1a2e'
-    ctx.font = 'bold 178px "Arial Black", Arial, sans-serif'
+    ctx.fillRect(60, 14, 392, 9)
+    // "HK" text — dark navy, reads against aluminum trailer
+    ctx.shadowColor = 'rgba(0,0,0,0.25)'
+    ctx.shadowBlur = 12
+    ctx.fillStyle = '#0d1320'
+    ctx.font = 'bold 196px "Arial Black", Arial, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('HK', 276, 132)
-    // Thin underline
+    ctx.fillText('HK', 256, 130)
+    ctx.shadowBlur = 0
+    // Red bottom bar
     ctx.fillStyle = '#E31E24'
-    ctx.fillRect(90, 210, 370, 8)
+    ctx.fillRect(60, 228, 392, 9)
 
     const tex = new THREE.CanvasTexture(canvas)
     const logoMat = new THREE.MeshStandardMaterial({
-      map: tex, transparent: true, metalness: 0.1, roughness: 0.6,
+      map: tex, transparent: true, metalness: 0.05, roughness: 0.5,
     })
-    const logo = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.36), logoMat)
-    logo.position.set(0, TH / 2 - 0.26, side * (HW + 0.028))
+    // Push Z further out than the ribs (ribs at HW + 0.028, logo at HW + 0.050)
+    const logo = new THREE.Mesh(new THREE.PlaneGeometry(0.80, 0.40), logoMat)
+    logo.position.set(0, TH / 2 - 0.28, side * (HW + 0.050))
     if (side === -1) logo.rotation.y = Math.PI
+    logo.renderOrder = 1
     logo.userData.sectionTitle = 'Side Wall'
     sideWall.add(logo)
   }
@@ -503,13 +504,13 @@ function buildTrailer(scene: THREE.Scene) {
         // Michelin-style sidewall shoulder rings (3 rings)
         for (const rr of [0.188, 0.205, 0.218]) {
           const treadGeo = new THREE.TorusGeometry(rr, 0.007, 8, 32)
-          const tread = new THREE.Mesh(treadGeo, mat('#1c1c1c', 0.1, 0.98))
+          const tread = new THREE.Mesh(treadGeo, mat('#222630', 0.1, 0.98))
           tread.position.set(axX, AY, wz); axleGrp.add(tread)
         }
 
         // Sidewall lettering band (lighter gray ring)
         const lwGeo = new THREE.TorusGeometry(0.196, 0.012, 6, 32)
-        const lw = new THREE.Mesh(lwGeo, mat('#2a2a2a', 0.12, 0.95))
+        const lw = new THREE.Mesh(lwGeo, mat('#3a3e48', 0.12, 0.95))
         lw.position.set(axX, AY, wz); axleGrp.add(lw)
 
         // Brake drum (behind rim)
@@ -568,6 +569,74 @@ function buildTrailer(scene: THREE.Scene) {
     }
   }
 
+  // ── K-2 Slider box (Hendrickson VANTRAAX) — rail that lets tandem slide ──
+  // Outer slider channel rail (full width of axle spread)
+  const axleSpread = (TL / 2 - 0.65) - (TL / 2 - 1.12) // = 0.47
+  const sliderCtrX = (TL / 2 - 0.65 + TL / 2 - 1.12) / 2
+  for (const z of [-(HW - 0.10), (HW - 0.10)]) {
+    // Outer C-channel rail
+    const rail = box(axleSpread + 0.28, 0.042, 0.048, mat(C.steel, 0.78, 0.25))
+    rail.position.set(sliderCtrX, AY + 0.27, z); axleGrp.add(rail)
+    // Inner slider tube (rides inside rail)
+    const slider = box(axleSpread + 0.18, 0.030, 0.030, mat(C.steelLt, 0.72, 0.30))
+    slider.position.set(sliderCtrX, AY + 0.27, z); axleGrp.add(slider)
+  }
+  // Cross-member connecting both rails
+  const sliderXmbr = box(0.040, 0.038, TW - 0.24, mat(C.steel, 0.75, 0.28))
+  sliderXmbr.position.set(sliderCtrX, AY + 0.27, 0); axleGrp.add(sliderXmbr)
+  // Locking pin assembly (manual pull pin for slider)
+  const pinHousing = box(0.055, 0.055, 0.042, mat(C.steel, 0.8, 0.22))
+  pinHousing.position.set(sliderCtrX + 0.06, AY + 0.31, HW - 0.12); axleGrp.add(pinHousing)
+  const pinHandle = box(0.012, 0.12, 0.012, mat(C.steelLt, 0.85, 0.18))
+  pinHandle.position.set(sliderCtrX + 0.06, AY + 0.38, HW - 0.12); axleGrp.add(pinHandle)
+
+  // ── Hendrickson shock absorbers — diagonal, per corner ───────────────
+  for (const axX of [TL / 2 - 0.65, TL / 2 - 1.12]) {
+    for (const z of [-(HW + 0.055), (HW + 0.055)]) {
+      // Shock body (upper, fatter)
+      const shockBody = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.020, 0.18, 10), mat('#2a3040', 0.55, 0.55))
+      shockBody.rotation.z = 0.28 // slight diagonal
+      shockBody.position.set(axX - 0.045, AY + 0.19, z); axleGrp.add(shockBody)
+      // Shock rod (lower, thinner chrome)
+      const shockRod = new THREE.Mesh(new THREE.CylinderGeometry(0.010, 0.010, 0.14, 8), mat(C.hubChr, 0.88, 0.10))
+      shockRod.rotation.z = 0.28
+      shockRod.position.set(axX - 0.010, AY + 0.09, z); axleGrp.add(shockRod)
+      // Upper mount bracket
+      const mntTop = box(0.040, 0.022, 0.038, mat(C.steel, 0.75, 0.28))
+      mntTop.position.set(axX - 0.065, AY + 0.29, z); axleGrp.add(mntTop)
+      // Lower mount bracket
+      const mntBot = box(0.032, 0.018, 0.030, mat(C.steel, 0.75, 0.28))
+      mntBot.position.set(axX + 0.008, AY + 0.02, z); axleGrp.add(mntBot)
+    }
+  }
+
+  // ── Height control valve (Hendrickson) — senses ride height ──────────
+  for (const z of [-(HW - 0.05), (HW - 0.05)]) {
+    const valve = box(0.055, 0.065, 0.038, mat('#1a2030', 0.35, 0.70))
+    valve.position.set(sliderCtrX + 0.05, AY + 0.36, z); axleGrp.add(valve)
+    // Linkage arm from valve to axle
+    const link = box(0.008, 0.14, 0.008, mat(C.steelLt, 0.75, 0.30))
+    link.rotation.z = 0.18
+    link.position.set(sliderCtrX + 0.04, AY + 0.26, z); axleGrp.add(link)
+    // Air line hose (small tube)
+    const hose = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.22, 6), mat('#111520', 0.1, 0.95))
+    hose.rotation.z = Math.PI / 2
+    hose.position.set(sliderCtrX - 0.04, AY + 0.36, z); axleGrp.add(hose)
+  }
+
+  // ── S-cam push rods & slack adjusters (brake actuation) ──────────────
+  for (const axX of [TL / 2 - 0.65, TL / 2 - 1.12]) {
+    for (const z of [-(HW + 0.05), (HW + 0.05)]) {
+      // Push rod (from brake chamber to slack adjuster)
+      const pushRod = box(0.010, 0.010, 0.14, mat(C.steelLt, 0.80, 0.22))
+      pushRod.position.set(axX - 0.11, AY + 0.10, z + (z > 0 ? 0.07 : -0.07)); axleGrp.add(pushRod)
+      // Slack adjuster arm
+      const slack = box(0.075, 0.014, 0.018, mat(C.steel, 0.72, 0.30))
+      slack.rotation.z = 0.45
+      slack.position.set(axX - 0.08, AY + 0.06, z + (z > 0 ? 0.07 : -0.07)); axleGrp.add(slack)
+    }
+  }
+
   tagGroup(axleGrp, 'Axle End')
   root.add(axleGrp)
 
@@ -601,6 +670,9 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
   useEffect(() => {
     if (!containerRef.current) return
     const container = containerRef.current
+    // Guard against StrictMode double-invoke
+    if (container.dataset.glInit === '1') return
+    container.dataset.glInit = '1'
 
     // ── Scene ──────────────────────────────────────────────────────
     const scene = new THREE.Scene()
@@ -610,11 +682,11 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
 
     // ── Lights ─────────────────────────────────────────────────────
     // Sky/ground hemisphere
-    const hemi = new THREE.HemisphereLight('#b0c8e0', '#302015', 0.9)
+    const hemi = new THREE.HemisphereLight('#b0c8e0', '#404860', 1.1)
     scene.add(hemi)
 
     // Key light (bright white from upper-front-right)
-    const key = new THREE.DirectionalLight('#ffffff', 3.2)
+    const key = new THREE.DirectionalLight('#ffffff', 3.4)
     key.position.set(7, 10, 6)
     key.castShadow = true
     key.shadow.mapSize.set(2048, 2048)
@@ -626,16 +698,20 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
     scene.add(key)
 
     // Fill light (cooler blue from left)
-    const fill = new THREE.DirectionalLight('#7090c0', 0.8)
+    const fill = new THREE.DirectionalLight('#7090c0', 0.9)
     fill.position.set(-8, 3, -3); scene.add(fill)
 
     // Red accent rim light (HK brand)
-    const rim = new THREE.DirectionalLight('#E31E24', 0.35)
+    const rim = new THREE.DirectionalLight('#E31E24', 0.40)
     rim.position.set(-4, -3, -8); scene.add(rim)
 
-    // Warm ground bounce
-    const bounce = new THREE.DirectionalLight('#c08040', 0.25)
+    // Warm ground bounce — brighter to illuminate tires from below
+    const bounce = new THREE.DirectionalLight('#8090b0', 0.55)
     bounce.position.set(0, -6, 4); scene.add(bounce)
+
+    // Under-axle fill — lifts tire darkness
+    const axleFill = new THREE.PointLight('#6070a0', 1.8, 5)
+    axleFill.position.set(2, -0.85, 0); scene.add(axleFill)
 
     // ── Ground plane ───────────────────────────────────────────────
     const groundGeo = new THREE.PlaneGeometry(24, 24)
@@ -649,19 +725,19 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
     scene.add(ground)
 
     // Grid overlay (subtle)
-    const grid = new THREE.GridHelper(24, 36, '#1a1b1e', '#151618')
+    const grid = new THREE.GridHelper(24, 36, '#20242e', '#181c24')
     grid.position.y = -0.998
     scene.add(grid)
 
     // ── Camera ─────────────────────────────────────────────────────
     const w = container.clientWidth || 700
     const h = container.clientHeight || 440
-    const camera = new THREE.PerspectiveCamera(36, w / h, 0.1, 60)
-    camera.position.set(3.8, 1.9, 3.6)
+    const camera = new THREE.PerspectiveCamera(52, w / h, 0.1, 60)
+    camera.position.set(3.2, 1.6, 3.4)
     camera.lookAt(0, 0, 0)
 
     // ── Renderer ───────────────────────────────────────────────────
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'default' })
     renderer.setSize(w, h)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.shadowMap.enabled = true
@@ -687,7 +763,7 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
       controls.autoRotate     = true
       controls.autoRotateSpeed = 0.55
       controls.enableZoom     = true
-      controls.minDistance    = 3.5
+      controls.minDistance    = 2.5
       controls.maxDistance    = 13
       controls.minPolarAngle  = 0.15
       controls.maxPolarAngle  = Math.PI * 0.78
@@ -742,14 +818,13 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
       timeRef.current = time
       controls?.update()
 
-      // Pulse emissive on active section
-      const activeTitle = activeSection?.title ?? null  // closure snapshot — updated via ref below
+      // Subtle pulse on active section — keep trailer colors realistic
       scene.traverse(o => {
         if (!(o instanceof THREE.Mesh) || !o.userData.sectionTitle) return
         const m = o.material as THREE.MeshStandardMaterial
         const t = o.userData.sectionTitle as string
         if (t === activeTitleRef.current) {
-          const pulse = Math.sin(time * 0.003) * 0.12 + 0.28
+          const pulse = Math.sin(time * 0.003) * 0.04 + 0.09
           m.emissive.set('#E31E24'); m.emissiveIntensity = pulse
         }
       })
@@ -763,8 +838,19 @@ export default function TrailerScene({ sections, activeSection, onSectionSelect 
       ro.disconnect()
       renderer.domElement.removeEventListener('mousemove', onMove)
       renderer.domElement.removeEventListener('click', onClick)
+      // Dispose all scene geometries + materials before losing context
+      scene.traverse(o => {
+        if (o instanceof THREE.Mesh) {
+          o.geometry?.dispose()
+          const m = o.material
+          if (Array.isArray(m)) m.forEach(x => x.dispose())
+          else m?.dispose()
+        }
+      })
+      renderer.forceContextLoss()
       renderer.dispose()
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement)
+      delete container.dataset.glInit
       sceneRef.current = null
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -795,7 +881,7 @@ function applyMaterials(scene: THREE.Scene, hovered: string | null, active: stri
       // pulsed in animation loop — just set color here
       m.emissive.set('#E31E24')
     } else if (t === hovered) {
-      m.emissive.set('#E31E24'); m.emissiveIntensity = 0.14
+      m.emissive.set('#E31E24'); m.emissiveIntensity = 0.07
     } else {
       m.emissive.set('#000000'); m.emissiveIntensity = 0
     }

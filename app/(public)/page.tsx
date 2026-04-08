@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { searchProducts, getTrailerSections } from '@/app/actions/products'
 import { TrailerExplorer } from '@/components/TrailerExplorer'
-import { HeroTestimonials } from '@/components/HeroTestimonials'
 
 const CATEGORIES = [
   { name: 'Trailer Body',   slug: 'TRAILER BODY PARTS', desc: 'Fenders, panels, doors and structural components' },
@@ -24,59 +23,90 @@ export default async function HomePage() {
   ])
 
   return (
-    <div style={{ backgroundColor: 'var(--surface)' }}>
+    <div style={{ backgroundColor: '#f0f2f5' }}>
 
-      {/* HERO */}
-      <section className="-mt-[72px] relative overflow-hidden flex items-center" style={{ backgroundColor: '#1a1f2e', minHeight: '100vh' }}>
-        <div className="absolute bottom-0 left-0 right-0 h-1" style={{ backgroundColor: '#E31E24' }} />
-        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" style={{ paddingTop: '140px', paddingBottom: '120px' }}>
+      {/* ════════════════════════════════════════════════════════
+          HERO — flush to navbar, no dead space
+      ════════════════════════════════════════════════════════ */}
+      <section className="-mt-[72px]" style={{ paddingTop: 72 }}>
 
-          {/* Left — headline + CTA */}
-          <div>
-            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 text-xs font-bold uppercase tracking-widest border rounded-sm" style={{ borderColor: 'rgba(227,30,36,0.5)', color: '#E31E24', fontFamily: 'Space Grotesk' }}>
-              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#E31E24' }} />
-              Wholesale Parts Supplier
-            </div>
-            <h1 className="font-black uppercase text-white mb-5" style={{ fontFamily: 'Space Grotesk', fontSize: 'clamp(3rem, 5vw, 5rem)', letterSpacing: '-0.02em', lineHeight: '0.9' }}>
-              HK Trailer<br />
-              <span style={{ color: '#E31E24' }}>Parts</span>
-            </h1>
-            <p className="text-base leading-relaxed mb-8 max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-              {"Canada's trusted wholesale source for trailer and mechanical parts. Browse 3,400+ products and submit an inquiry — we'll contact you with pricing."}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/products" className="btn-primary inline-block px-8 py-3 text-sm">Browse Parts Catalog</Link>
-              <Link href="/signup" className="inline-block px-8 py-3 font-bold uppercase tracking-widest border transition-all text-white hover:bg-white hover:text-gray-900" style={{ fontFamily: 'Space Grotesk', borderColor: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>Create Account</Link>
-            </div>
-            <div className="flex gap-10 mt-12 pt-10" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
-              {[['3,400+', 'Parts in Stock'], ['B2B', 'Wholesale Only'], ['24h', 'Quote Turnaround']].map(([val, label]) => (
-                <div key={label}>
-                  <div className="text-2xl font-black text-white" style={{ fontFamily: 'Space Grotesk' }}>{val}</div>
-                  <div className="text-xs uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Space Grotesk' }}>{label}</div>
+        {/* ── Red power stripe ─────────────────────────────────── */}
+        <div style={{ height: 4, background: 'linear-gradient(90deg, #E31E24 0%, #c01219 60%, #E31E24 100%)' }} />
+
+        {/* ── Brand identity bar — white, flush ────────────────── */}
+        <div style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e4e6ea' }}>
+          <div className="max-w-[1440px] mx-auto px-10 py-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+            {/* Left: HK + divider + tagline */}
+            <div className="flex items-center gap-5">
+              <div style={{ fontFamily: 'Space Grotesk', fontSize: 'clamp(2.8rem,4.5vw,4rem)', fontWeight: 900, letterSpacing: '-0.055em', color: '#111827', lineHeight: 1 }}>
+                HK
+              </div>
+              <div style={{ width: 1.5, height: 52, backgroundColor: '#e4e6ea', flexShrink: 0 }} />
+              <div>
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: '0.62rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', color: '#E31E24', marginBottom: 4 }}>
+                  Trailer Parts
                 </div>
-              ))}
+                <div style={{ fontFamily: 'Space Grotesk', fontSize: '0.78rem', color: '#6b7280', lineHeight: 1.45, maxWidth: 260 }}>
+                  Canada's B2B wholesale source<br />for trailer & mechanical parts.
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Right — testimonials */}
-          <div className="hidden lg:block">
-            <HeroTestimonials />
-          </div>
+            {/* Right: stats + CTA */}
+            <div className="flex flex-wrap items-center gap-5 lg:gap-7">
+              {/* Stat dividers */}
+              <div className="flex items-center gap-5 lg:gap-6" style={{ borderLeft: '1px solid #e4e6ea', paddingLeft: 20 }}>
+                {[['3,400+', 'Parts in Stock'], ['B2B', 'Wholesale Only'], ['24h', 'Quote Response']].map(([val, label], i) => (
+                  <div key={label} className="flex items-center gap-5 lg:gap-6">
+                    <div>
+                      <div style={{ fontFamily: 'Space Grotesk', fontSize: '1.45rem', fontWeight: 900, color: '#111827', lineHeight: 1 }}>{val}</div>
+                      <div style={{ fontFamily: 'Space Grotesk', fontSize: '0.52rem', textTransform: 'uppercase', letterSpacing: '0.18em', color: '#9ca3af', marginTop: 3 }}>{label}</div>
+                    </div>
+                    {i < 2 && <div style={{ width: 1, height: 32, backgroundColor: '#e4e6ea', flexShrink: 0 }} />}
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/products"
+                className="btn-primary inline-flex items-center gap-2"
+                style={{ fontSize: '0.68rem', padding: '11px 24px', letterSpacing: '0.1em', whiteSpace: 'nowrap' }}
+              >
+                Browse Catalog
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+            </div>
 
+          </div>
         </div>
+
+        {/* ── Explorer section — grey field ─────────────────────── */}
+        <div style={{ backgroundColor: '#f0f2f5', padding: '28px 40px 44px' }}>
+          <div className="max-w-[1440px] mx-auto">
+
+            {/* Section label */}
+            <div className="flex items-center gap-3 mb-6">
+              <div style={{ width: 3, height: 16, backgroundColor: '#E31E24', borderRadius: 2, flexShrink: 0 }} />
+              <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#374151' }}>
+                Explore by Trailer
+              </span>
+              <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.58rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.28em', color: '#9ca3af' }}>
+                · Click a section · Drag to rotate
+              </span>
+            </div>
+
+            {/* Explorer component */}
+            <TrailerExplorer sections={trailerSections} darkMode={false} sceneHeight={430} />
+
+          </div>
+        </div>
+
       </section>
 
-      {/* TRAILER EXPLORER */}
+      {/* ════════════════════════════════════════════════════════
+          FEATURED PRODUCTS
+      ════════════════════════════════════════════════════════ */}
       <section className="py-16 px-6 lg:px-12" style={{ backgroundColor: '#ffffff' }}>
-        <div className="max-w-[1440px] mx-auto">
-          <p className="section-label mb-2">Interactive Parts Finder</p>
-          <h2 className="text-3xl font-black uppercase tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>Explore by Trailer Section</h2>
-          <TrailerExplorer sections={trailerSections} />
-        </div>
-      </section>
-
-      {/* FEATURED PRODUCTS */}
-      <section className="py-16 px-6 lg:px-12" style={{ backgroundColor: 'var(--surface)' }}>
         <div className="max-w-[1440px] mx-auto">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -85,7 +115,6 @@ export default async function HomePage() {
             </div>
             <Link href="/products" className="btn-outline hidden md:inline-block px-5 py-2 text-xs rounded-sm">View All</Link>
           </div>
-          {/* Horizontal scroll row */}
           <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E31E24 transparent' }}>
             {featured.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`} className="hk-card group flex flex-col rounded-sm overflow-hidden flex-shrink-0" style={{ width: 200 }}>
@@ -106,7 +135,6 @@ export default async function HomePage() {
                 </div>
               </Link>
             ))}
-            {/* End card — view all */}
             <Link href="/products" className="flex-shrink-0 flex flex-col items-center justify-center gap-3 rounded-sm border-2 border-dashed border-[#E31E24]/30 hover:border-[#E31E24] transition-colors" style={{ width: 160, minHeight: 240 }}>
               <span className="text-3xl" style={{ color: '#E31E24' }}>→</span>
               <span className="text-[10px] font-black uppercase tracking-widest text-center" style={{ color: '#E31E24', fontFamily: 'Space Grotesk' }}>View Full<br />Catalog</span>
@@ -115,8 +143,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CATEGORIES + TRUST SIGNALS */}
-      <section className="px-6 lg:px-12 pb-16" style={{ backgroundColor: '#ffffff' }}>
+      {/* ════════════════════════════════════════════════════════
+          CATEGORIES + TRUST
+      ════════════════════════════════════════════════════════ */}
+      <section className="px-6 lg:px-12 pb-16" style={{ backgroundColor: '#f0f2f5' }}>
         <div className="max-w-[1440px] mx-auto">
           <p className="section-label mb-2 pt-16">Browse by Category</p>
           <h2 className="text-3xl font-black uppercase tracking-tight mb-10" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>Shop by Section</h2>
@@ -146,7 +176,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA BANNER */}
+      {/* ════════════════════════════════════════════════════════
+          CTA BANNER
+      ════════════════════════════════════════════════════════ */}
       <section className="py-16 px-6 lg:px-12" style={{ backgroundColor: '#E31E24' }}>
         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>

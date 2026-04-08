@@ -74,7 +74,7 @@ const BRAND_LOGOS: Record<string, string> = {
   'ITD':             '/brands/itd.svg',
 }
 
-export function TrailerExplorer({ sections }: { sections: Section[] }) {
+export function TrailerExplorer({ sections, darkMode = false, sceneHeight = 340 }: { sections: Section[]; darkMode?: boolean; sceneHeight?: number }) {
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<Section | null>(null)
   const [products, setProducts]           = useState<SectionProduct[]>([])
@@ -118,12 +118,17 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
     <div className="flex flex-col gap-0">
 
       {/* ── Brand Filter Row ─────────────────────────────────────────── */}
-      <div className="mb-6">
-        <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--on-surface-dim)] mb-3"
-          style={{ fontFamily: 'Space Grotesk' }}>
-          Filter by Trailer Brand — <span className="text-[#E31E24]">{selectedBrand ?? 'All Brands'}</span>
-        </p>
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
+      <div className="mb-5">
+        <div className="flex items-center gap-2 mb-3">
+          <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', color: darkMode ? 'rgba(255,255,255,0.4)' : '#9ca3af' }}>
+            Filter by brand
+          </span>
+          <div style={{ flex: 1, height: 1, backgroundColor: darkMode ? 'rgba(255,255,255,0.06)' : '#e8eaed' }} />
+          <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E31E24' }}>
+            {selectedBrand ?? 'All Brands'}
+          </span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2.5">
           {FEATURED_BRANDS.map(brand => {
             const isActive = selectedBrand === brand
             return (
@@ -132,33 +137,41 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
                 onClick={() => handleBrandSelect(brand)}
                 style={{
                   fontFamily: 'Space Grotesk',
-                  backgroundColor: isActive ? BRAND_COLORS[brand] ?? '#1a1a2e' : 'var(--surface-raised)',
-                  outline: isActive ? '2px solid #E31E24' : 'none',
-                  outlineOffset: '2px',
+                  backgroundColor: isActive ? (BRAND_COLORS[brand] ?? '#1a1a2e') : (darkMode ? 'rgba(255,255,255,0.06)' : '#ffffff'),
+                  border: isActive ? '2px solid #E31E24' : `1px solid ${darkMode ? 'rgba(255,255,255,0.1)' : '#e4e6ea'}`,
+                  boxShadow: isActive ? '0 0 0 3px rgba(227,30,36,0.12)' : '0 1px 4px rgba(0,0,0,0.06)',
+                  borderRadius: 8,
+                  transition: 'all 0.18s ease',
                 }}
-                className="group flex flex-col items-center justify-center gap-1.5 p-2.5 border border-[#cbd0dd]/20 hover:border-[#E31E24]/60 transition-all duration-200 hover:scale-[1.04]"
+                className="group flex flex-col items-center justify-center gap-1.5 p-3 hover:scale-[1.04] hover:shadow-md"
               >
-                <div className="w-full h-8 flex items-center justify-center px-1.5 rounded bg-white">
-                  <img
-                    src={BRAND_LOGOS[brand]}
-                    alt={brand}
-                    className="max-h-6 max-w-full object-contain"
-                  />
+                <div className="w-full h-10 flex items-center justify-center px-1.5" style={{ background: '#fff', borderRadius: 5 }}>
+                  <img src={BRAND_LOGOS[brand]} alt={brand} className="max-h-7 max-w-full object-contain" />
                 </div>
-                <span className={`text-[8px] font-bold uppercase tracking-wide text-center leading-tight truncate w-full ${isActive ? 'text-white' : 'text-[var(--on-surface-dim)]'}`}>
+                <span style={{
+                  fontSize: '0.58rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em',
+                  color: isActive ? '#ffffff' : (darkMode ? 'rgba(255,255,255,0.45)' : '#6b7280'),
+                  display: 'block', textAlign: 'center', width: '100%',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
                   {brand}
                 </span>
               </button>
             )
           })}
-
         </div>
       </div>
 
       {/* ── Full-width Trailer Scene ─────────────────────────────────── */}
       <div
-        className="w-full border border-[#cbd0dd]/20 relative"
-        style={{ height: 460, backgroundColor: 'var(--surface-raised)' }}
+        className="w-full relative overflow-hidden"
+        style={{
+          height: sceneHeight,
+          backgroundColor: darkMode ? '#111317' : '#1a1d23',
+          borderRadius: 12,
+          boxShadow: '0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.12)',
+          border: darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid #2a2d35',
+        }}
       >
         <TrailerScene
           sections={sections}
@@ -200,39 +213,61 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
 
       {/* ── Section Tabs ─────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 items-center mt-4">
-        <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--on-surface-dim)] mr-1"
-          style={{ fontFamily: 'Space Grotesk' }}>Section:</span>
+        <span style={{ fontFamily: 'Space Grotesk', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.2em', color: darkMode ? 'rgba(255,255,255,0.35)' : '#9ca3af', marginRight: 4 }}>
+          Section:
+        </span>
         {sections.map(s => (
           <button
             key={s.id}
             onClick={() => handleSectionSelect(s)}
-            style={{ fontFamily: 'Space Grotesk' }}
-            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide border transition-all duration-200 ${
-              activeSection?.id === s.id
-                ? 'border-[#E31E24] bg-[#E31E24]/10 text-[#E31E24]'
-                : 'border-[#cbd0dd]/30 text-[var(--on-surface-dim)] hover:border-[#E31E24] hover:text-[#E31E24]'
-            }`}
+            style={{
+              fontFamily: 'Space Grotesk', fontSize: '0.62rem', fontWeight: 700,
+              textTransform: 'uppercase', letterSpacing: '0.12em',
+              padding: '6px 14px',
+              border: activeSection?.id === s.id ? '1.5px solid #E31E24' : `1px solid ${darkMode ? 'rgba(255,255,255,0.12)' : '#e4e6ea'}`,
+              backgroundColor: activeSection?.id === s.id ? 'rgba(227,30,36,0.08)' : 'transparent',
+              color: activeSection?.id === s.id ? '#E31E24' : (darkMode ? 'rgba(255,255,255,0.4)' : '#6b7280'),
+              borderRadius: 5,
+              transition: 'all 0.15s ease',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => { if (activeSection?.id !== s.id) { (e.currentTarget as HTMLButtonElement).style.borderColor = '#E31E24'; (e.currentTarget as HTMLButtonElement).style.color = '#E31E24' }}}
+            onMouseLeave={e => { if (activeSection?.id !== s.id) { (e.currentTarget as HTMLButtonElement).style.borderColor = darkMode ? 'rgba(255,255,255,0.12)' : '#e4e6ea'; (e.currentTarget as HTMLButtonElement).style.color = darkMode ? 'rgba(255,255,255,0.4)' : '#6b7280' }}}
           >
             {displayName(s.title)}
           </button>
         ))}
         <Link
           href={productsUrl}
-          style={{ fontFamily: 'Space Grotesk' }}
-          className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide border border-dashed border-[#cbd0dd]/30 text-[var(--on-surface-dim)] hover:border-[#E31E24] hover:text-[#E31E24] transition-all duration-200"
+          style={{
+            fontFamily: 'Space Grotesk', fontSize: '0.62rem', fontWeight: 700,
+            textTransform: 'uppercase', letterSpacing: '0.12em',
+            padding: '6px 14px',
+            border: `1px dashed ${darkMode ? 'rgba(255,255,255,0.12)' : '#e4e6ea'}`,
+            color: darkMode ? 'rgba(255,255,255,0.3)' : '#9ca3af',
+            borderRadius: 5,
+          }}
+          className="hover:border-[#E31E24] hover:text-[#E31E24] transition-all duration-150"
         >
           All Categories →
         </Link>
       </div>
 
+      {/* ── Default state — simple muted prompt ──────────────────────── */}
+      {!activeSection && (
+        <p style={{ marginTop: 14, fontFamily: 'Space Grotesk', fontSize: '0.62rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.2em', color: darkMode ? 'rgba(255,255,255,0.18)' : '#b0b8c4' }}>
+          Click any section on the trailer — or use the tabs above — to browse parts
+        </p>
+      )}
+
       {/* ── Products Below Trailer ───────────────────────────────────── */}
       {activeSection && (
         <div className="mt-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#cbd0dd]/20">
+          <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(203,208,221,0.2)'}` }}>
             <div>
-              <p className="text-[8px] text-[var(--on-surface-dim)] uppercase tracking-[0.2em] font-bold mb-0.5"
-                style={{ fontFamily: 'Space Grotesk' }}>
+              <p className="text-[9px] uppercase tracking-[0.2em] font-bold mb-0.5"
+                style={{ fontFamily: 'Space Grotesk', color: darkMode ? 'rgba(255,255,255,0.4)' : 'var(--on-surface-dim)' }}>
                 {selectedBrand ?? 'All Brands'} · {displayName(activeSection.title)}
               </p>
               <h3 className="text-base font-black uppercase text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>
@@ -241,10 +276,10 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
             </div>
             {!loading && (
               <div className="text-right">
-                <p className="text-2xl font-black text-[var(--on-surface)]" style={{ fontFamily: 'Space Grotesk' }}>
+                <p className="text-2xl font-black" style={{ fontFamily: 'Space Grotesk', color: darkMode ? '#ffffff' : 'var(--on-surface)' }}>
                   {products.length > 12 ? `12 / ${products.length}` : products.length}
                 </p>
-                <p className="text-[8px] text-[var(--on-surface-dim)] uppercase tracking-widest" style={{ fontFamily: 'Space Grotesk' }}>
+                <p className="text-[8px] uppercase tracking-widest" style={{ fontFamily: 'Space Grotesk', color: darkMode ? 'rgba(255,255,255,0.4)' : 'var(--on-surface-dim)' }}>
                   {products.length > 12 ? 'Showing / Total' : 'Parts Found'}
                 </p>
               </div>
@@ -276,16 +311,16 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
                   <Link
                     key={p.id}
                     href={`/products/${p.id}`}
-                    className="group flex flex-col border border-[#cbd0dd]/20 hover:border-[#E31E24]/60 transition-all duration-200 hover:shadow-md"
-                    style={{ backgroundColor: 'var(--surface-card)' }}
+                    className="group flex flex-col border hover:border-[#E31E24]/60 transition-all duration-200 hover:shadow-md"
+                    style={{ backgroundColor: darkMode ? 'rgba(255,255,255,0.05)' : 'var(--surface-card)', borderColor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(203,208,221,0.2)' }}
                   >
                     {/* Image */}
-                    <div className="w-full aspect-square flex items-center justify-center border-b border-[#cbd0dd]/10 overflow-hidden"
-                      style={{ backgroundColor: 'var(--surface-raised)' }}>
+                    <div className="w-full aspect-square flex items-center justify-center overflow-hidden"
+                      style={{ backgroundColor: darkMode ? 'rgba(255,255,255,0.04)' : 'var(--surface-raised)', borderBottom: `1px solid ${darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(203,208,221,0.1)'}` }}>
                       {p.primary_image_url ? (
                         <img src={p.primary_image_url} alt="" className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200" />
                       ) : (
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cbd0dd" strokeWidth="1" opacity="0.4">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={darkMode ? 'rgba(255,255,255,0.15)' : '#cbd0dd'} strokeWidth="1" opacity="0.4">
                           <rect x="3" y="3" width="18" height="18"/>
                         </svg>
                       )}
@@ -294,14 +329,14 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
                     <div className="p-2.5 flex flex-col gap-1 flex-1">
                       <p className="font-mono text-[8px] text-[#E31E24] leading-none">{p.sku}</p>
                       <p className="text-[10px] font-bold uppercase leading-tight group-hover:text-[#E31E24] transition-colors line-clamp-2"
-                        style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>
+                        style={{ fontFamily: 'Space Grotesk', color: darkMode ? 'rgba(255,255,255,0.85)' : 'var(--on-surface)' }}>
                         {p.name}
                       </p>
                       <div className="mt-auto pt-1 flex items-center justify-between">
                         <span className={`text-[7px] font-bold uppercase tracking-wide px-1.5 py-0.5 border ${
                           p.in_stock
-                            ? 'text-green-400 border-green-800/40 bg-green-950/40'
-                            : 'text-orange-400 border-orange-800/40 bg-orange-950/40'
+                            ? darkMode ? 'text-green-400 border-green-800/40 bg-green-950/40' : 'text-green-700 border-green-200 bg-green-50'
+                            : darkMode ? 'text-orange-400 border-orange-800/40 bg-orange-950/40' : 'text-orange-600 border-orange-200 bg-orange-50'
                         }`}>
                           {p.in_stock ? 'In Stock' : 'Out'}
                         </span>
@@ -313,11 +348,11 @@ export function TrailerExplorer({ sections }: { sections: Section[] }) {
               </div>
 
               {/* Footer link */}
-              <div className="mt-5 pt-4 border-t border-[#cbd0dd]/20 flex items-center justify-between">
+              <div className="mt-5 pt-4 flex items-center justify-between" style={{ borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(203,208,221,0.2)'}` }}>
                 <Link
                   href={productsUrl}
-                  className="text-[9px] font-bold uppercase tracking-widest text-[var(--on-surface-dim)] hover:text-[#E31E24] transition-colors"
-                  style={{ fontFamily: 'Space Grotesk' }}
+                  className="text-[9px] font-bold uppercase tracking-widest hover:text-[#E31E24] transition-colors"
+                  style={{ fontFamily: 'Space Grotesk', color: darkMode ? 'rgba(255,255,255,0.4)' : 'var(--on-surface-dim)' }}
                 >
                   Browse Full {selectedBrand ?? 'Parts'} Catalog →
                 </Link>
