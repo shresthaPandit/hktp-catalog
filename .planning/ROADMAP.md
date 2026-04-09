@@ -87,7 +87,11 @@ Plans:
   3. Every sync run produces a row in the sync_logs table with start time, end time, and counts of products added, updated, and failed
   4. After 3 consecutive failed sync runs, admin receives a WhatsApp alert
   5. A written API contract document specifies the PHP endpoint, request format, response schema, and authentication so the client developer has everything needed to build their side
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 09-01-PLAN.md — Write PHP API contract document + set up Supabase Postgres credential in n8n + verify search_vector trigger
+- [ ] 09-02-PLAN.md — Build core n8n sync workflow (dual triggers, paginated fetch, batched Postgres upsert, sync_logs logging)
+- [ ] 09-03-PLAN.md — Add consecutive failure alerting + activate workflow + end-to-end verification
 
 ## Progress
 
@@ -101,4 +105,4 @@ Plans:
 | 6. UI Polish | v1.0 | - | Complete | March 2026 |
 | 7. Phone OTP Signup | 2/2 | Complete   | 2026-04-01 | - |
 | 8. Order Notifications | 3/3 | Complete   | 2026-04-07 | - |
-| 9. Product Sync Workflow | v1.1 | 0/? | Not started | - |
+| 9. Product Sync Workflow | v1.1 | 0/3 | Not started | - |
