@@ -42,16 +42,27 @@ export async function getProduct(id: number): Promise<Product | null> {
   return data as Product
 }
 
-export async function getRelatedProducts(ids: number[]): Promise<Product[]> {
-  if (!ids || ids.length === 0) return []
+export async function getSimilarProducts(productId: number, externalId: number, category: string | null): Promise<Product[]> {
+  if (!category) return []
   const supabase = await createClient()
+  // Fetch up to 200 in same category, then sort in JS by nearest external_id (numeric)
+  // external_id is TEXT in DB so ORDER BY there is lexicographic — sort must happen in JS
   const { data } = await supabase
     .from('products')
-    .select('id, external_id, sku, name, brand, price, primary_image_url, in_stock, description, category, subcategory, specifications, related_parts, image_urls, last_sync_at, created_at, updated_at')
-    .in('id', ids.slice(0, 12))
+    .select('id, external_id, sku, name, brand, primary_image_url, in_stock, category')
+    .eq('category', category)
     .eq('status', 1)
     .eq('show_on_website', true)
-  return (data ?? []) as Product[]
+    .neq('id', productId)
+    .limit(200)
+  if (!data) return []
+  return data
+    .sort((a, b) => {
+      const aDiff = Math.abs((Number(a.external_id) || 0) - externalId)
+      const bDiff = Math.abs((Number(b.external_id) || 0) - externalId)
+      return aDiff - bDiff
+    })
+    .slice(0, 8) as Product[]
 }
 
 export async function getCategories(): Promise<string[]> {
@@ -152,4 +163,54 @@ export async function getProductsBySectionAndBrand(sectionId: number, dbBrands: 
   if (dbBrands && dbBrands.length > 0) q = q.in('brand', dbBrands)
   const { data } = await q
   return (data ?? []) as { id: number; sku: string; name: string; primary_image_url: string | null; in_stock: boolean }[]
+}
+
+export async function getCategoriesWithMeta(): Promise<{ category: string; count: number; image: string | null }[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('products')
+    .select('category, primary_image_url')
+    .eq('status', 1)
+    .eq('show_on_website', true)
+    .not('category', 'is', null)
+  if (!data) return []
+  const map = new Map<string, { count: number; image: string | null }>()
+  for (const row of data) {
+    const cat = row.category as string
+    const existing = map.get(cat)
+    if (!existing) {
+      map.set(cat, { count: 1, image: (row.primary_image_url as string | null) ?? null })
+    } else {
+      existing.count++
+      if (!existing.image && row.primary_image_url) existing.image = row.primary_image_url as string
+    }
+  }
+  return Array.from(map.entries())
+    .map(([category, meta]) => ({ category, ...meta }))
+    .sort((a, b) => a.category.localeCompare(b.category))
+}
+
+export async function getBrandsWithMeta(): Promise<{ brand: string; count: number; image: string | null }[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('products')
+    .select('brand, primary_image_url')
+    .eq('status', 1)
+    .eq('show_on_website', true)
+    .not('brand', 'is', null)
+  if (!data) return []
+  const map = new Map<string, { count: number; image: string | null }>()
+  for (const row of data) {
+    const brand = row.brand as string
+    const existing = map.get(brand)
+    if (!existing) {
+      map.set(brand, { count: 1, image: (row.primary_image_url as string | null) ?? null })
+    } else {
+      existing.count++
+      if (!existing.image && row.primary_image_url) existing.image = row.primary_image_url as string
+    }
+  }
+  return Array.from(map.entries())
+    .map(([brand, meta]) => ({ brand, ...meta }))
+    .sort((a, b) => a.brand.localeCompare(b.brand))
 }

@@ -1,11 +1,10 @@
 import { notFound } from 'next/navigation'
-import { getProduct, getRelatedProducts } from '@/app/actions/products'
+import { getProduct, getSimilarProducts } from '@/app/actions/products'
 import { getCurrentUser } from '@/app/actions/auth'
 import { ProductImageGallery } from '@/components/ProductImageGallery'
 import { Badge } from '@/components/ui/Badge'
 import { ProductCard } from '@/components/ProductCard'
 import { AddToCartSection } from '@/components/AddToCartSection'
-import { formatPrice } from '@/lib/utils'
 import type { ProductSearchResult } from '@/lib/types'
 
 interface PageProps {
@@ -24,14 +23,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
   ])
   if (!product) notFound()
 
-  const relatedProducts = await getRelatedProducts(product.related_parts ?? [])
+  const relatedProducts = await getSimilarProducts(productId, Number(product.external_id) || 0, product.category ?? null)
 
   const relatedAsSearchResults: ProductSearchResult[] = relatedProducts.map(p => ({
     id: p.id,
     external_id: p.external_id,
     sku: p.sku,
     name: p.name,
-    description: p.description,
+    description: p.description ?? null,
     category: p.category,
     brand: p.brand,
     price: p.price,
@@ -40,7 +39,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
     relevance: 0,
   }))
 
-  const specs = product.specifications as Record<string, string> | null
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--surface)' }}>
@@ -92,12 +90,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {product.in_stock ? 'In Stock' : 'Out of Stock'}
             </Badge>
 
-            {product.price && (
-              <p className="text-2xl font-black text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>
-                {formatPrice(product.price)}
-              </p>
-            )}
-
             {product.description && (
               <p className="text-sm leading-relaxed border-l-2 border-[#cbd0dd]/40 pl-4" style={{ color: 'var(--on-surface-dim)' }}>
                 {product.description}
@@ -119,10 +111,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   Alternate Part Numbers
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {product.alternate_skus.map(sku => (
-                    <span key={sku} className="font-mono text-xs bg-[var(--surface-raised)] border border-[#cbd0dd]/40 px-2 py-1 text-[var(--on-surface-dim)]">
+                  {product.alternate_skus.map((sku, idx) => (
+                    <a
+                      key={idx}
+                      href={`/products?q=${encodeURIComponent(sku.split(' ')[0])}`}
+                      className="font-mono text-xs border border-[#cbd0dd]/40 px-3 py-1.5 hover:border-[#E31E24] hover:text-[#E31E24] transition-colors"
+                      style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--on-surface-dim)' }}
+                    >
                       {sku}
-                    </span>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -130,29 +127,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Specifications Table */}
-        {specs && Object.keys(specs).length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-1 w-12 bg-[#E31E24]" />
-              <h2 className="text-xl font-black uppercase tracking-tight" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>
-                Specifications
-              </h2>
-            </div>
-            <div className="border border-[#cbd0dd]/20 overflow-hidden">
-              <table className="w-full text-sm">
-                <tbody>
-                  {Object.entries(specs).map(([key, value], idx) => (
-                    <tr key={key} className="border-b border-[#cbd0dd]/10 last:border-0" style={{ backgroundColor: idx % 2 === 0 ? 'var(--surface-card)' : 'var(--surface-raised)' }}>
-                      <td className="px-4 py-3 font-bold uppercase tracking-wide text-[10px] w-1/3 border-r border-[#cbd0dd]/20 text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>{key}</td>
-                      <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--on-surface-dim)' }}>{String(value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
 
         {/* Related Parts */}
         {relatedAsSearchResults.length > 0 && (

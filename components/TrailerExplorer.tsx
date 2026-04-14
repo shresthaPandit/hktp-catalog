@@ -74,7 +74,7 @@ const BRAND_LOGOS: Record<string, string> = {
   'ITD':             '/brands/itd.svg',
 }
 
-export function TrailerExplorer({ sections, darkMode = false, sceneHeight = 340 }: { sections: Section[]; darkMode?: boolean; sceneHeight?: number }) {
+export function TrailerExplorer({ sections, darkMode = false, sceneHeight = 340, showBrandPanel = false }: { sections: Section[]; darkMode?: boolean; sceneHeight?: number; showBrandPanel?: boolean }) {
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<Section | null>(null)
   const [products, setProducts]           = useState<SectionProduct[]>([])
@@ -162,53 +162,104 @@ export function TrailerExplorer({ sections, darkMode = false, sceneHeight = 340 
         </div>
       </div>
 
-      {/* ── Full-width Trailer Scene ─────────────────────────────────── */}
-      <div
-        className="w-full relative overflow-hidden"
-        style={{
-          height: sceneHeight,
-          backgroundColor: darkMode ? '#111317' : '#1a1d23',
-          borderRadius: 12,
-          boxShadow: '0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.12)',
-          border: darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid #2a2d35',
-        }}
-      >
-        <TrailerScene
-          sections={sections}
-          activeSection={activeSection}
-          onSectionSelect={handleSectionSelect}
-        />
+      {/* ── Scene row: optional HK panel + 3D scene ─────────────────── */}
+      <div style={{ display: 'flex', height: sceneHeight, boxShadow: '0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.12)', borderRadius: 12 }}>
 
-        {/* Corner hint */}
-        <div className="absolute top-3 left-3 pointer-events-none">
-          <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--on-surface-dim)]"
-            style={{ fontFamily: 'Space Grotesk' }}>3D Parts Map</p>
-          <p className="text-[7px] text-[var(--on-surface-dim)]/50 mt-0.5" style={{ fontFamily: 'Space Grotesk' }}>
-            Drag to rotate · Click a section
-          </p>
+        {/* HK brand panel — left of scene */}
+        {showBrandPanel && (
+          <div
+            style={{
+              width: 'clamp(80px, 7vw, 110px)',
+              flexShrink: 0,
+              backgroundColor: '#E31E24',
+              borderRadius: '12px 0 0 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '20px 8px',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {[0,1,2,3,4,5,6,7,8].map(i => (
+              <div key={i} aria-hidden style={{
+                position: 'absolute', left: '-30%', right: '-30%',
+                top: `${-15 + i * 16}%`, height: 1,
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                transform: 'rotate(-25deg)',
+                pointerEvents: 'none',
+              }} />
+            ))}
+            <span style={{
+              fontFamily: 'Space Grotesk',
+              fontSize: 'clamp(1.8rem, 3vw, 2.6rem)',
+              fontWeight: 900, letterSpacing: '-0.04em',
+              color: '#ffffff', lineHeight: 1,
+              position: 'relative', zIndex: 1,
+            }}>HK</span>
+            <div style={{ width: 16, height: 1.5, backgroundColor: 'rgba(255,255,255,0.4)', flexShrink: 0, position: 'relative', zIndex: 1 }} />
+            <span style={{
+              fontFamily: 'Space Grotesk', fontSize: '0.36rem', fontWeight: 800,
+              textTransform: 'uppercase', letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.7)', textAlign: 'center',
+              position: 'relative', zIndex: 1,
+              writingMode: 'vertical-lr',
+              transform: 'rotate(180deg)',
+            }}>TRAILER PARTS</span>
+          </div>
+        )}
+
+        {/* 3D Scene */}
+        <div
+          className="relative overflow-hidden"
+          style={{
+            flex: 1,
+            backgroundColor: darkMode ? '#111317' : '#1a1d23',
+            borderRadius: showBrandPanel ? '0 12px 12px 0' : 12,
+            border: darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid #2a2d35',
+            borderLeft: showBrandPanel ? 'none' : undefined,
+          }}
+        >
+          <TrailerScene
+            sections={sections}
+            activeSection={activeSection}
+            onSectionSelect={handleSectionSelect}
+          />
+
+          {/* Corner hint */}
+          <div className="absolute top-3 left-3 pointer-events-none">
+            <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--on-surface-dim)]"
+              style={{ fontFamily: 'Space Grotesk' }}>3D Parts Map</p>
+            <p className="text-[7px] text-[var(--on-surface-dim)]/50 mt-0.5" style={{ fontFamily: 'Space Grotesk' }}>
+              Drag to rotate · Click a section
+            </p>
+          </div>
+
+          {/* Active section badge */}
+          {activeSection && (
+            <div className="absolute top-3 right-3 pointer-events-none">
+              <div className="border-l-2 border-[#E31E24] pl-2">
+                <p className="text-[7px] text-[var(--on-surface-dim)] uppercase tracking-widest" style={{ fontFamily: 'Space Grotesk' }}>Selected</p>
+                <p className="text-[10px] font-black uppercase text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>
+                  {displayName(activeSection.title)}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Brand badge */}
+          {selectedBrand && (
+            <div className="absolute bottom-3 left-3 pointer-events-none">
+              <span className="text-[9px] font-black uppercase tracking-widest text-white border border-[#E31E24]/60 bg-[#E31E24]/20 px-2 py-1"
+                style={{ fontFamily: 'Space Grotesk' }}>
+                {selectedBrand}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Active section badge */}
-        {activeSection && (
-          <div className="absolute top-3 right-3 pointer-events-none">
-            <div className="border-l-2 border-[#E31E24] pl-2">
-              <p className="text-[7px] text-[var(--on-surface-dim)] uppercase tracking-widest" style={{ fontFamily: 'Space Grotesk' }}>Selected</p>
-              <p className="text-[10px] font-black uppercase text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>
-                {displayName(activeSection.title)}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Brand badge */}
-        {selectedBrand && (
-          <div className="absolute bottom-3 left-3 pointer-events-none">
-            <span className="text-[9px] font-black uppercase tracking-widest text-white border border-[#E31E24]/60 bg-[#E31E24]/20 px-2 py-1"
-              style={{ fontFamily: 'Space Grotesk' }}>
-              {selectedBrand}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* ── Section Tabs ─────────────────────────────────────────────── */}

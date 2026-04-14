@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { CartBadge } from '@/components/CartBadge'
 import { signOut } from '@/app/actions/auth'
@@ -11,6 +11,8 @@ export function HeaderControls({ profile }: { profile: Profile }) {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const [scrolled, setScrolled] = useState(!isHome)
+  const [shopOpen, setShopOpen] = useState(false)
+  const shopRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!isHome) { setScrolled(true); return }
@@ -20,11 +22,27 @@ export function HeaderControls({ profile }: { profile: Profile }) {
     return () => window.removeEventListener('scroll', check)
   }, [isHome])
 
-  const onProducts = pathname === '/products' || pathname.startsWith('/products?')
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (shopRef.current && !shopRef.current.contains(e.target as Node)) {
+        setShopOpen(false)
+      }
+    }
+    if (shopOpen) document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [shopOpen])
+
+  const onShop = pathname.startsWith('/products') || pathname.startsWith('/categories') || pathname.startsWith('/brands')
   const linkColor   = '#374151'
   const subtleColor = '#6b7280'
   const dividerColor = '#e5e7eb'
   const linkStyle   = { color: linkColor, fontFamily: 'Space Grotesk' }
+
+  const shopDropdownItems = [
+    { label: 'Categories', href: '/categories' },
+    { label: 'Brands',     href: '/brands' },
+    { label: 'Products',   href: '/products' },
+  ]
 
   return (
     <>
@@ -39,8 +57,41 @@ export function HeaderControls({ profile }: { profile: Profile }) {
 
       {/* Nav */}
       <nav className="hidden md:flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
-        <Link href="/"         className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Home</Link>
-        <Link href="/products" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Products</Link>
+        <Link href="/" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Home</Link>
+
+        {/* Shop dropdown */}
+        <div className="relative" ref={shopRef}>
+          <button
+            onClick={() => setShopOpen(o => !o)}
+            className="nav-link px-4 py-2 rounded transition-colors flex items-center gap-1"
+            style={{ ...linkStyle, color: onShop ? '#E31E24' : linkColor }}
+          >
+            Shop
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+              className={`transition-transform duration-200 ${shopOpen ? 'rotate-180' : ''}`}>
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {shopOpen && (
+            <div
+              className="absolute top-full left-0 mt-1 w-44 shadow-xl rounded overflow-hidden"
+              style={{ backgroundColor: 'var(--surface-card)', border: '1px solid var(--border-dim)', zIndex: 200 }}
+            >
+              {shopDropdownItems.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setShopOpen(false)}
+                  className="block px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors hover:text-[#E31E24]"
+                  style={{ fontFamily: 'Space Grotesk', color: pathname === item.href ? '#E31E24' : linkColor, borderBottom: '1px solid var(--border-dim)' }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
         {profile?.role !== 'admin' && <Link href="/orders" className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>My Orders</Link>}
         <Link href="/profile"  className="nav-link px-4 py-2 rounded transition-colors" style={linkStyle}>Profile</Link>
       </nav>

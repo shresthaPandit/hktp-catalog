@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-import { formatPrice } from '@/lib/utils'
 import type { ProductSearchResult } from '@/lib/types'
 
 export function ProductCard({ product }: { product: ProductSearchResult }) {
@@ -37,9 +36,6 @@ export function ProductCard({ product }: { product: ProductSearchResult }) {
         <p className="text-sm font-bold uppercase leading-tight line-clamp-2 flex-1" style={{ fontFamily: 'Space Grotesk', color: 'var(--on-surface)' }}>
           {product.name}
         </p>
-        {product.price && (
-          <p className="text-sm font-bold text-[#E31E24]" style={{ fontFamily: 'Space Grotesk' }}>{formatPrice(product.price)}</p>
-        )}
       </div>
     </Link>
   )
