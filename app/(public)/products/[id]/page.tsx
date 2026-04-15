@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getProduct, getSimilarProducts } from '@/app/actions/products'
+import { getProduct, getSimilarProducts, getAlternateProducts } from '@/app/actions/products'
 import { getCurrentUser } from '@/app/actions/auth'
 import { ProductImageGallery } from '@/components/ProductImageGallery'
 import { Badge } from '@/components/ui/Badge'
@@ -23,7 +23,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
   ])
   if (!product) notFound()
 
-  const relatedProducts = await getSimilarProducts(productId, Number(product.external_id) || 0, product.category ?? null)
+  const [relatedProducts, alternateProducts] = await Promise.all([
+    getSimilarProducts(productId, Number(product.external_id) || 0, product.category ?? null),
+    getAlternateProducts(product.related_parts ?? []),
+  ])
 
   const relatedAsSearchResults: ProductSearchResult[] = relatedProducts.map(p => ({
     id: p.id,
@@ -104,23 +107,80 @@ export default async function ProductDetailPage({ params }: PageProps) {
               in_stock={product.in_stock}
             />
 
-            {/* Alternate SKUs */}
+            {/* Cross Reference table */}
             {product.alternate_skus && product.alternate_skus.length > 0 && (
               <div className="pt-4 border-t border-[#cbd0dd]/20">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E31E24] mb-3" style={{ fontFamily: 'Space Grotesk' }}>
-                  Alternate Part Numbers
+                  Cross Reference
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.alternate_skus.map((sku, idx) => (
-                    <a
-                      key={idx}
-                      href={`/products?q=${encodeURIComponent(sku.split(' ')[0])}`}
-                      className="font-mono text-xs border border-[#cbd0dd]/40 px-3 py-1.5 hover:border-[#E31E24] hover:text-[#E31E24] transition-colors"
-                      style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--on-surface-dim)' }}
-                    >
-                      {sku}
-                    </a>
-                  ))}
+                <div className="overflow-auto max-h-48 rounded border border-[#cbd0dd]/20">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr style={{ backgroundColor: 'var(--surface-raised)' }}>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px] w-12" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>Sr.</th>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px]" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>Cross Reference</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {product.alternate_skus.map((sku, idx) => (
+                        <tr key={idx} className="border-t border-[#cbd0dd]/10 hover:bg-[#E31E24]/5 transition-colors">
+                          <td className="px-3 py-2" style={{ color: 'var(--on-surface-dim)' }}>{idx + 1}</td>
+                          <td className="px-3 py-2">
+                            <a
+                              href={`/products?q=${encodeURIComponent(sku.trim())}`}
+                              className="font-mono hover:text-[#E31E24] transition-colors"
+                              style={{ color: 'var(--on-surface)' }}
+                            >
+                              {sku}
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Alternate Products table */}
+            {alternateProducts.length > 0 && (
+              <div className="pt-4 border-t border-[#cbd0dd]/20">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E31E24] mb-3" style={{ fontFamily: 'Space Grotesk' }}>
+                  Alternate Products
+                </p>
+                <div className="overflow-auto rounded border border-[#cbd0dd]/20">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr style={{ backgroundColor: 'var(--surface-raised)' }}>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px] w-8" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>#</th>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px] w-10" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}></th>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px]" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>Name</th>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px]" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>SKU</th>
+                        <th className="text-left px-3 py-2 font-bold uppercase tracking-widest text-[10px]" style={{ color: 'var(--on-surface-dim)', fontFamily: 'Space Grotesk' }}>Brand</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {alternateProducts.map((alt, idx) => (
+                        <tr key={alt.id} className="border-t border-[#cbd0dd]/10 hover:bg-[#E31E24]/5 transition-colors">
+                          <td className="px-3 py-2" style={{ color: 'var(--on-surface-dim)' }}>{idx + 1}</td>
+                          <td className="px-3 py-2">
+                            {alt.primary_image_url ? (
+                              <img src={alt.primary_image_url} alt={alt.name} className="w-8 h-8 object-contain" />
+                            ) : (
+                              <div className="w-8 h-8 rounded" style={{ backgroundColor: 'var(--surface-raised)' }} />
+                            )}
+                          </td>
+                          <td className="px-3 py-2">
+                            <a href={`/products/${alt.id}`} className="hover:text-[#E31E24] transition-colors font-medium" style={{ color: 'var(--on-surface)' }}>
+                              {alt.name}
+                            </a>
+                          </td>
+                          <td className="px-3 py-2 font-mono" style={{ color: 'var(--on-surface-dim)' }}>{alt.sku}</td>
+                          <td className="px-3 py-2 font-bold text-[#E31E24]">{alt.brand ?? '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}

@@ -13,6 +13,24 @@ export async function searchProducts(params: {
   const supabase = await createClient()
   const { query = '', category = null, brand = null, inStockOnly = false, page = 1, limit = 24 } = params
 
+  // Browse mode (no query): direct query — faster and avoids RPC
+  if (!query) {
+    let q = supabase
+      .from('products')
+      .select('id, external_id, sku, name, description, category, brand, price, primary_image_url, in_stock')
+      .eq('status', 1)
+      .eq('show_on_website', true)
+      .order('name', { ascending: true })
+      .range((page - 1) * limit, page * limit - 1)
+    if (category) q = q.eq('category', category)
+    if (brand) q = q.eq('brand', brand)
+    if (inStockOnly) q = q.eq('in_stock', true)
+    const { data, error } = await q
+    if (error) { console.error('searchProducts browse error:', error); return [] }
+    return (data ?? []).map(p => ({ ...p, relevance: 0 })) as ProductSearchResult[]
+  }
+
+  // Search mode (with query): use RPC for full-text + cross-ref search
   const { data, error } = await supabase.rpc('search_products', {
     search_query: query,
     category_filter: category,
@@ -40,6 +58,21 @@ export async function getProduct(id: number): Promise<Product | null> {
     .single()
   if (error) return null
   return data as Product
+}
+
+export async function getAlternateProducts(externalIds: number[]): Promise<{
+  id: number; external_id: string; sku: string; name: string;
+  brand: string | null; primary_image_url: string | null; in_stock: boolean
+}[]> {
+  if (!externalIds?.length) return []
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('products')
+    .select('id, external_id, sku, name, brand, primary_image_url, in_stock')
+    .in('external_id', externalIds.map(String))
+    .eq('status', 1)
+    .eq('show_on_website', true)
+  return (data ?? []) as { id: number; external_id: string; sku: string; name: string; brand: string | null; primary_image_url: string | null; in_stock: boolean }[]
 }
 
 export async function getSimilarProducts(productId: number, externalId: number, category: string | null): Promise<Product[]> {
