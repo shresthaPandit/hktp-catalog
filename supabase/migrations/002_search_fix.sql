@@ -49,7 +49,7 @@ RETURNS TABLE (
       AND EXISTS (
             SELECT 1
             FROM unnest(p.alternate_skus) AS alt
-            WHERE upper(alt) = upper(_q.q)
+            WHERE upper(trim(alt)) = upper(_q.q)
           )
       AND p.id NOT IN (SELECT t1.id FROM t1)
       AND p.status = 1 AND p.show_on_website = true
@@ -84,7 +84,7 @@ RETURNS TABLE (
       AND EXISTS (
             SELECT 1
             FROM unnest(p.alternate_skus) AS alt
-            WHERE upper(alt) LIKE '%' || upper(_q.q) || '%'
+            WHERE upper(trim(alt)) LIKE '%' || upper(_q.q) || '%'
           )
       AND p.id NOT IN (SELECT t1.id FROM t1)
       AND p.id NOT IN (SELECT t2.id FROM t2)
